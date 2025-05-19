@@ -1,7 +1,6 @@
 {
   "contrato_id": "abc123",
   "nombre": "Nombre trabajador",
-  "apellidos": "Apellido trabajador",
   "dni": "12345678X",
   "email": "juan@email.com",
   "telefono": "600112233",
