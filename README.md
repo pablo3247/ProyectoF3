@@ -2,14 +2,7 @@
 Aplicacion para firmar contratos
 
 
-<!-- Día actual (cambiar manualmente la fecha de inicio) -->
-<p id="dynamic-day"></p>
-<script>
-  const start = new Date('2024-05-20');
-  const now = new Date();
-  const day = Math.floor((now - start) / 86400000) + 1;
-  document.getElementById('dynamic-day').innerHTML = `📅 <b>Día ${day}</b>`;
-</script>
+![Día del proyecto](https://img.shields.io/badge/D%C3%ADa-1-blue?style=for-the-badge)
 
 ## Progreso General
 
