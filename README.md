@@ -1,6 +1,16 @@
 # ProyectoF3
 Aplicacion para firmar contratos
 
+
+<!-- Día actual (cambiar manualmente la fecha de inicio) -->
+<p id="dynamic-day"></p>
+<script>
+  const start = new Date('2024-05-20');
+  const now = new Date();
+  const day = Math.floor((now - start) / 86400000) + 1;
+  document.getElementById('dynamic-day').innerHTML = `📅 <b>Día ${day}</b>`;
+</script>
+
 ## Progreso General
 
 | Día | Pablo     | Raquel    | Victor    | Alexander  | Adrian    |
