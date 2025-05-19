@@ -1,9 +1,0 @@
-[
-  {
-    "id": "abc123",
-    "nombre": "Juan Pérez",
-    "dni": "12345678X",
-    "fecha_firma": "2025-05-19",
-    "pdf_url": "/files/firmado_abc123.pdf"
-  }
-]
