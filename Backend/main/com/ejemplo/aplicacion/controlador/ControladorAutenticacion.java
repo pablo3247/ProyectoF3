@@ -33,5 +33,11 @@ public class ControladorAutenticacion {
 
         return ResponseEntity.ok(new RespuestaLogin(token, usuario.getRol()));
     }
+
+    @PostMapping
+    public ResponseEntity<Usuario> registrarUsuario(@RequestBody Usuario usuario) {
+        return ResponseEntity.ok(repositorioUsuario.save(usuario));
+    }
+
 }
 

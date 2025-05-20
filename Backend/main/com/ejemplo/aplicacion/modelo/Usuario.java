@@ -12,6 +12,10 @@ public class Usuario {
     private String telefono;
     private String contrasenaHash;
     private String rol; // por ejemplo: "cliente" o "admin"
+    private String nombre;
+    private String apellidos;
+    private String dnnni;
+
 
     // Getters y Setters
     public Long getId() { return id; }
@@ -28,4 +32,14 @@ public class Usuario {
 
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getApellidos() { return apellidos; }
+    public void setApellidos(String apellidos) { this.apellidos = apellidos; }
+
+    public String getDnnni() { return dnnni; }
+    public void setDnnni(String dnnni) { this.dnnni = dnnni; }
+
 }
