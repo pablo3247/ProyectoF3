@@ -10,7 +10,7 @@ public class Usuario {
 
     private String nombre;
     private String correo;
-    private int telefono;// o número de teléfono como identificador
+    private String telefono;// o número de teléfono como identificador
     private String contrasenaHash;
     private String certificado;
     private String rol; // cliente o root
@@ -41,10 +41,10 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
-    public int getTelefono(){
+    public String getTelefono(){
         return telefono;
     }
 
