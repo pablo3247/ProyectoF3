@@ -1,4 +1,4 @@
-
+package com.ejemplo.aplicacion.dto;
 
 public class PeticionLogin {
     private String identificador; // puede ser correo o teléfono
