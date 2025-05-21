@@ -1,11 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import FormularioUsuario from "./components/FormularioUsuario";
+import FormularioUsuario from "./FormularioUsuario";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/formulario" />} />
         <Route path="/formulario" element={<FormularioUsuario />} />
       </Routes>
     </Router>
