@@ -3,6 +3,8 @@ package com.ejemplo.aplicacion.controlador;
 import com.ejemplo.aplicacion.dto.PeticionLogin;
 import com.ejemplo.aplicacion.dto.RespuestaLogin;
 import com.ejemplo.aplicacion.modelo.Usuario;
+import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
+import com.ejemplo.aplicacion.seguridad.ServicioJwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

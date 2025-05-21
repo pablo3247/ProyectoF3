@@ -9,7 +9,8 @@ public class Usuario {
     private Long id;
 
     private String nombre;
-    private String correo;     // o número de teléfono como identificador
+    private String correo;
+    private int telefono;// o número de teléfono como identificador
     private String contrasenaHash;
     private String certificado;
     private String rol; // cliente o root
@@ -38,6 +39,13 @@ public class Usuario {
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public void setTelefono(int telefono) {
+        this.telefono = telefono;
+    }
+    public int getTelefono(){
+        return telefono;
     }
 
     public String getContrasenaHash() {
