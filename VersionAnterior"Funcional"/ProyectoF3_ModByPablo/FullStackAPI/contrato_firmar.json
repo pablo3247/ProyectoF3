@@ -1,0 +1,13 @@
+{
+{
+  "contrato_id": 1,
+  "usuario": {
+    "nombre": "Mario",
+    "apellidos": "Ruiz López",
+    "dni": "12345678Z",
+    "email": "mario@example.com",
+    "telefono": "600112233"
+  },
+  "firma_svg":"<svg xmlns='http://www.w3.org/2000/svg' width='300' height='100'><path d='M10 80 Q 95 10 180 80' stroke='black' fill='transparent' stroke-width='2'/></svg>",
+  "tipo_firma": "Garabato"
+}
