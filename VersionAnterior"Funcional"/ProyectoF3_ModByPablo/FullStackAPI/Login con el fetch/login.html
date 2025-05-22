@@ -1,0 +1,22 @@
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const usuario = document.getElementById("email").value;
+        const clave = document.getElementById("password").value;
+
+        const response = await fetch("http://localhost:8080/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usuario, clave })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem("token", data.token); // guarda el JWT
+            window.location.href = "visor.html"; // redirige tras login
+        } else {
+            alert("Login fallido");
+        }
+    });
+</script>
