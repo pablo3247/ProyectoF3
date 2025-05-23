@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Datos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Datos del Cliente</h2>
+    <form id="form-datos">
+      <input type="text" name="nombre" placeholder="Nombre" required>
+      <input type="text" name="apellidos" placeholder="Apellidos" required>
+      <input type="text" name="dni" placeholder="DNI" required>
+      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <input type="tel" name="telefono" placeholder="Teléfono" required>
+      <button type="submit">Continuar</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('form-datos').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const datos = {
+        nombre: this.nombre.value,
+        apellidos: this.apellidos.value,
+        dnnni: this.dni.value,        // <-- CAMBIADO
+        correo: this.email.value,     // <-- CAMBIADO
+        telefono: this.telefono.value
+      };
+
+      fetch('http://localhost:8080/api/usuarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Error al guardar");
+        return res.json();
+      })
+      .then(data => {
+        alert("Datos enviados correctamente");
+        console.log(data);
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error al enviar los datos");
+      });
+    });
+  </script>
+
+</body>
+</html>
