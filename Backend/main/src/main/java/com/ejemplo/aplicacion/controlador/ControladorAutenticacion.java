@@ -12,38 +12,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/login")
 @CrossOrigin(origins = "*")
 public class ControladorAutenticacion {
 
-    @Autowired
-    private RepositorioUsuario repositorioUsuario;
+    @RestController
+    @RequestMapping("/api/auth")
+    @CrossOrigin(origins = "*") // o especifica tu frontend
+    public class AuthController {
 
-    @Autowired
-    private PasswordEncoder codificadorContrasena;
+        @Autowired
+        private RepositorioUsuario usuarioRepository;
 
-    @Autowired
-    private ServicioJwt servicioJwt;
+        @PostMapping("/login")
+        public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+            String email = credentials.get("email");
+            String password = credentials.get("password");
 
-    @PostMapping
-    public ResponseEntity<RespuestaLogin> login(@RequestBody PeticionLogin peticion) {
-        Usuario usuario = repositorioUsuario.findByCorreo(peticion.getIdentificador())
-                .or(() -> repositorioUsuario.findByTelefono(peticion.getIdentificador()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario no encontrado"));
+            Optional<Usuario> user = usuarioRepository.findByEmailAndPassword(email, password);
 
-        if (!codificadorContrasena.matches(peticion.getContrasena(), usuario.getContrasenaHash())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña incorrecta");
+            if (user.isPresent()) {
+                return ResponseEntity.ok("Login exitoso");
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+            }
         }
-
-        String token = servicioJwt.generarToken(usuario);
-
-        return ResponseEntity.ok(new RespuestaLogin(token, usuario.getRol()));
-    }
-
-    @PostMapping
-    public ResponseEntity<Usuario> registrarUsuario(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(repositorioUsuario.save(usuario));
     }
 
 }
