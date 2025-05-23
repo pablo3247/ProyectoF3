@@ -1,4 +1,4 @@
-
+package dto;
 
 public class RespuestaLogin {
     private String token;

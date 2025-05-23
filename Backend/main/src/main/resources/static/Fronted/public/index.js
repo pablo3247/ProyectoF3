@@ -10,7 +10,7 @@ fetch("http://localhost:8080/api/auth/login", {
 })
 .then(response => {
     if (response.ok) {
-        window.location.href = "/siguiente-pagina.html";
+        window.location.href = "formulario.html";
     } else {
         alert("Credenciales incorrectas");
     }
