@@ -1,0 +1,13 @@
+{
+  "cliente": {
+    "nombre": "trabajador",
+    "apellidos": "apellido trabajador",
+    "dni": "12345678A",
+    "email": "trabajador@example.com",
+    "telefono": "+34123456789"
+  },
+  "firma": {
+    "trazos": "[SVG/JSON data]",
+    "fecha": "2025-11-26"
+  }
+}
