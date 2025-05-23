@@ -3,7 +3,6 @@
   "contrato_id": 1,
   "usuario": {
     "nombre": "trabajador1",
-    "apellidos": "Ruiz Lópe",
     "dni": "12345678Z",
     "email": "trabajador@example.com",
     "telefono": "600112233"
