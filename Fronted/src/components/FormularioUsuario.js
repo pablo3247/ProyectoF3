@@ -4,7 +4,7 @@ function FormularioUsuario() {
   const [formData, setFormData] = useState({
     nombre: "",
     apellidos: "",
-    dnnni: "",
+    dni: "",
     correo: "",
     telefono: ""
   });
@@ -19,7 +19,7 @@ function FormularioUsuario() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8080/api/usuarios", {
+    fetch("http://localhost:8080/usuarios", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)
@@ -44,7 +44,7 @@ function FormularioUsuario() {
       <form onSubmit={handleSubmit}>
         <input name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleChange} required />
         <input name="apellidos" placeholder="Apellidos" value={formData.apellidos} onChange={handleChange} required />
-        <input name="dnnni" placeholder="DNI" value={formData.dnnni} onChange={handleChange} required />
+        <input name="dni" placeholder="DNI" value={formData.dni} onChange={handleChange} required />
         <input name="correo" placeholder="Correo electrónico" type="email" value={formData.correo} onChange={handleChange} required />
         <input name="telefono" placeholder="Teléfono" value={formData.telefono} onChange={handleChange} required />
         <button type="submit">Continuar</button>
