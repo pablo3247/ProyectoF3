@@ -1,4 +1,4 @@
-package com.ejemplo.aplicacion;
+package ejemplo.aplicacion;
 
 public @interface SpringBootApplication {
 }

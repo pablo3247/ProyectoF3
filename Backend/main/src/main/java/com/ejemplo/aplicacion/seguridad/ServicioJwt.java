@@ -1,6 +1,3 @@
-package com.ejemplo.aplicacion.seguridad;
-
-import com.ejemplo.aplicacion.modelo.Usuario;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
 

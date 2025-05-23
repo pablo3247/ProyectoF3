@@ -1,4 +1,4 @@
-package com.ejemplo.aplicacion.dto;
+
 
 public class RespuestaLogin {
     private String token;
