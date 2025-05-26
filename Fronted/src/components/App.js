@@ -2,7 +2,7 @@ import React from "react";
 import Login from "./Login";
 import FormularioUsuario from "./FormularioUsuario";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import FirmaCanvas from './components/FirmaCanvas';
+import FirmaCanvas from './FirmaCanvas';
 
 function App() {
   return (
