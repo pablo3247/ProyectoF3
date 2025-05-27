@@ -28,6 +28,12 @@ public class SeguridadConfig {
                         // Cualquier otra petición requiere autenticación
                         .requestMatchers("/api/auth/login").permitAll()
 
+                        //Quitar esto y poner solo las paginas a las que accede!!!!
+                        //Se ve que no permite a todas las rutas xd
+                        .requestMatchers("*").permitAll()
+
+                        // Permitir acceso libre a contratos
+                        .requestMatchers("/api/contratos/**").permitAll()
 
                         .anyRequest().authenticated()
                 );

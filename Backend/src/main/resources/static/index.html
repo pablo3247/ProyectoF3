@@ -1,25 +1,45 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="Fronted/public/style.css">
+  <meta charset="UTF-8">
+  <title>Login</title>
 </head>
 <body>
-<div class="login-container">
-    <h1>Login</h1>
-    <form>
-        <input type="email" placeholder="Correo electrónico" required>
-        <input type="password" placeholder="Contraseña" required>
-        <button type="submit">Entrar</button>
-    </form>
+<h2>Login de Usuario</h2>
+<form id="loginForm">
+  <input type="email" id="email" placeholder="Correo electrónico" required><br>
+  <input type="password" id="password" placeholder="Contraseña" required><br>
+  <button type="submit">Iniciar sesión</button>
+</form>
 
-    <!-- Botones adicionales -->
-    <div class="navigation-buttons">
-        <button onclick="window.location.href='formulario.html'">Ir a Formulario</button>
-        <button onclick="window.location.href='visor.html'">Ir a Visor</button>
-    </div>
-</div>
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      try {
+const response = await fetch("http://localhost:8080/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  email: document.getElementById("email").value,
+                  contrasena: document.getElementById("password").value
+              })
+          });
+
+          if (!response.ok) throw new Error("No se pudo conectar con el backend.");
+
+          const result = await response.text();
+          if (result.includes("exitoso")) {
+              alert("✅ Conexión exitosa con la base de datos Supabase");
+              window.location.href = "selector.html";
+          } else {
+              alert("❌ Error: " + result);
+          }
+      } catch (err) {
+          alert("🚫 Error de conexión al backend");
+          alert(console.error(err));
+      }
+  });
+</script>
 </body>
 </html>

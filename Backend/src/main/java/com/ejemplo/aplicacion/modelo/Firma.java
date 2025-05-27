@@ -4,26 +4,26 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Firmas")
+@Table(name = "firmas")
 public class Firma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "\"Contrato\"")
+    @Column(name = "\"contrato\"")
     private Long contrato;
 
-    @Column(name = "\"Usuario\"")
+    @Column(name = "\"usuario\"")
     private Long usuario;
 
-    @Column(name = "\"Fecha\"")
+    @Column(name = "\"fecha\"")
     private LocalDateTime fecha;
 
-    @Column(name = "\"Tipo_Firma\"")
+    @Column(name = "\"tipo_Firma\"")
     private String tipoFirma;
 
-    @Column(name = "\"Valido\"")
+    @Column(name = "\"valido\"")
     private boolean valido;
 
     // Getters y Setters

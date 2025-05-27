@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Contratos</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        input, button { margin: 5px; }
+    </style>
+</head>
+<body>
+<h1>Lista de Contratos</h1>
+
+<div>
+    <input type="text" id="nombre" placeholder="Nombre del contrato">
+    <input type="text" id="archivoPDF" placeholder="Archivo PDF (URL o nombre)">
+    <button onclick="crearContrato()">Crear Contrato</button>
+</div>
+
+<table id="tablaContratos">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Archivo PDF</th>
+        <th>Firmado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const API_URL = "/api/contratos";
+
+    async function cargarContratos() {
+        const response = await fetch(API_URL);
+        const contratos = await response.json();
+        const tbody = document.querySelector("#tablaContratos tbody");
+        tbody.innerHTML = "";
+
+        contratos.forEach(c => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${c.id}</td>
+                <td>${c.nombre}</td>
+                <td>${c.archivoPDF || '-'}</td>
+                <td>${c.firmado ? "Sí" : "No"}</td>
+                <td>
+                    <button onclick="eliminarContrato(${c.id})">Eliminar</button>
+                    <button onclick="firmarContrato(${c.id}, ${c.firmado})">${c.firmado ? "Desfirmar" : "Firmar"}</button>
+                </td>
+            `;
+            tbody.appendChild(fila);
+        });
+    }
+
+    async function crearContrato() {
+        const nombre = document.getElementById("nombre").value;
+        const archivoPDF = document.getElementById("archivoPDF").value;
+
+        if (!nombre) {
+            alert("El nombre es obligatorio.");
+            return;
+        }
+
+        await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nombre, archivoPDF, firmado: false })
+        });
+
+        document.getElementById("nombre").value = "";
+        document.getElementById("archivoPDF").value = "";
+        cargarContratos();
+    }
+
+    async function eliminarContrato(id) {
+        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        cargarContratos();
+    }
+
+    async function firmarContrato(id, actual) {
+        const response = await fetch(`${API_URL}/${id}`);
+        const contrato = await response.json();
+
+        contrato.firmado = !actual;
+
+        await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(contrato)
+        });
+
+        cargarContratos();
+    }
+
+    // Cargar al inicio
+    window.onload = cargarContratos;
+</script>
+</body>
+</html>
