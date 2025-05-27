@@ -1,0 +1,12 @@
+[
+  {
+    "contrato_id": 1,
+    "nombre": "Contrato de servicios 2025",
+    "firmado_por": "Nombre Trabajador",
+    "dni": "12345678Z",
+    "email": "trabajador@example.com",
+    "fecha_firma": "2025-05-19T13:20:01Z",
+    "estado": "Firmado",
+    "pdf_url": "/files/firmado_1_trabajador_Nombre.pdf"
+  }
+]
