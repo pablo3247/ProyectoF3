@@ -2,6 +2,7 @@
 /home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/ServicioJwt.java
 /home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Firma.java
 /home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/JwtLoginSpringbootApplication.java
+/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java
 /home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioUsuario.java
 /home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorAutenticacion.java
 /home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/dto/PeticionLogin.java
