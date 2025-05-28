@@ -1,45 +1,45 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Firma del Contrato</title>
 </head>
 <body>
-<h2>Login de Usuario</h2>
-<form id="loginForm">
-  <input type="email" id="email" placeholder="Correo electrónico" required><br>
-  <input type="password" id="password" placeholder="Contraseña" required><br>
-  <button type="submit">Iniciar sesión</button>
-</form>
+  <h1>Firma del Contrato</h1>
 
-<script>
-  document.getElementById("loginForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      try {
-const response = await fetch("http://localhost:8080/api/auth/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                  email: document.getElementById("email").value,
-                  contrasena: document.getElementById("password").value
-              })
-          });
+  <label>ID del contrato:</label>
+  <input type="number" id="contratoId"><br><br>
 
-          if (!response.ok) throw new Error("No se pudo conectar con el backend.");
+  <label>Firma (formato SVG o JSON):</label><br>
+  <textarea id="firmaDatos" rows="10" cols="50"></textarea><br><br>
 
-          const result = await response.text();
-          if (result.includes("exitoso")) {
-              alert("✅ Conexión exitosa con la base de datos Supabase");
-              window.location.href = "selector.html";
-          } else {
-              alert("❌ Error: " + result);
-          }
-      } catch (err) {
-          alert("🚫 Error de conexión al backend");
-          alert(console.error(err));
-      }
-  });
-</script>
+  <button onclick="guardarFirma()">Guardar firma temporal</button>
+  <button onclick="verPreview()">Ver PDF de vista previa</button>
+
+  <script>
+    async function guardarFirma() {
+      const contratoId = document.getElementById("contratoId").value;
+      const datosFirma = document.getElementById("firmaDatos").value;
+
+      const response = await fetch("http://localhost:8080/api/contratos/firma-temporal", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contratoId: parseInt(contratoId),
+          datosFirma: datosFirma
+        })
+      });
+
+      const data = await response.text();
+      alert("Respuesta del backend: " + data);
+    }
+
+    function verPreview() {
+      const contratoId = document.getElementById("contratoId").value;
+      window.open("http://localhost:8080/api/contratos/preview/" + contratoId, "_blank");
+    }
+  </script>
 </body>
 </html>
