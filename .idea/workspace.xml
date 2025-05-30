@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="30/05">
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/main/jwt-login-springboot.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Fronted/src/components/FormularioUsuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/Fronted/src/components/FormularioUsuario.js" afterDir="false" />
-    </list>
+    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="30/05" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -132,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748597757191</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="30/05">
+      <option name="closed" value="true" />
+      <created>1748599656687</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1748599656687</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -140,5 +142,16 @@
     <MESSAGE value="26/05" />
     <MESSAGE value="30/05" />
     <option name="LAST_COMMIT_MESSAGE" value="30/05" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/JwtLoginSpringbootApplication.java</url>
+          <line>7</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
