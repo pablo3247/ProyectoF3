@@ -36,7 +36,7 @@ function FormularioUsuario() {
         console.error(err);
         alert("Error al enviar los datos");
       });
-
+  };
 
   return (
     <div style={{ maxWidth: "400px", margin: "auto" }}>
@@ -54,3 +54,4 @@ function FormularioUsuario() {
 }
 
 export default FormularioUsuario;
+
