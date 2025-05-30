@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="26/05">
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Usuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Usuario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/FormularioUsuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/Fronted/src/components/FormularioUsuario.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;raquelbenages&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/pablo3247/ProyectoF3.git&quot;,
+    &quot;accountId&quot;: &quot;488b2337-001b-439f-b5b9-e03b7510f36d&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2xUZ8YZ8iOboQVV6rLp864DLiER" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.JwtLoginSpringbootApplication.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="" />
+      <created>1747994453859</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747994453859</updated>
+    </task>
+    <task id="LOCAL-00001" summary="23/05">
+      <option name="closed" value="true" />
+      <created>1747995719886</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747995719887</updated>
+    </task>
+    <task id="LOCAL-00002" summary="23/05">
+      <option name="closed" value="true" />
+      <created>1747998008207</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747998008207</updated>
+    </task>
+    <task id="LOCAL-00003" summary="23/05">
+      <option name="closed" value="true" />
+      <created>1747998154508</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747998154508</updated>
+    </task>
+    <task id="LOCAL-00004" summary="26/05">
+      <option name="closed" value="true" />
+      <created>1748248200544</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1748248200544</updated>
+    </task>
+    <task id="LOCAL-00005" summary="26/05">
+      <option name="closed" value="true" />
+      <created>1748248547199</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1748248547199</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="23/05" />
+    <MESSAGE value="26/05" />
+    <option name="LAST_COMMIT_MESSAGE" value="26/05" />
+  </component>
+</project>

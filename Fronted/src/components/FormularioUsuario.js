@@ -19,7 +19,7 @@ function FormularioUsuario() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8080/usuarios", {
+    fetch("http://localhost:8080/api/usuarios/crear", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)
@@ -29,14 +29,14 @@ function FormularioUsuario() {
         return res.json();
       })
       .then((data) => {
-        alert("Datos enviados correctamente");
-        console.log(data);
+        alert("Usuario creado correctamente");
+        console.log("Backend respondió:", data);
       })
       .catch((err) => {
         console.error(err);
         alert("Error al enviar los datos");
       });
-  };
+
 
   return (
     <div style={{ maxWidth: "400px", margin: "auto" }}>
