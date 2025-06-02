@@ -1,38 +1,40 @@
-import React, { useState } from "react";
-import "./Login.css";
+import React, { useState } from 'react';
+import { loginUsuario } from '../api/usuarioAPI';
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Login() {
+  const [credenciales, setCredenciales] = useState({ usuario: '', clave: '' });
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Iniciando sesión con:", { email, password });
-    alert("Login enviado (sin lógica todavía)");
+    setError(null);
+    try {
+      const respuesta = await loginUsuario(credenciales);
+      console.log('Login correcto:', respuesta);
+      // 🔐 Guarda token o redirige según tu lógica
+    } catch (err) {
+      setError(err.response?.data?.mensaje || 'Error al iniciar sesión');
+    }
   };
 
   return (
-    <div className="login-container">
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Entrar</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Usuario"
+        value={credenciales.usuario}
+        onChange={e => setCredenciales({ ...credenciales, usuario: e.target.value })}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Contraseña"
+        value={credenciales.clave}
+        onChange={e => setCredenciales({ ...credenciales, clave: e.target.value })}
+        required
+      />
+      <button type="submit">Iniciar sesión</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </form>
   );
 }
-
-export default Login;
