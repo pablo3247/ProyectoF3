@@ -38,7 +38,6 @@
         const resultado = await respuesta.json();
         localStorage.setItem('token', resultado.token);
         document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-        // redireccionar si quieres: window.location.href = "/selector.html";
       } else {
         document.getElementById('mensaje').textContent = 'Error al iniciar sesión';
       }
