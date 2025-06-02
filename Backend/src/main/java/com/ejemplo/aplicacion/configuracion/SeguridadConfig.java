@@ -21,21 +21,8 @@ public class SeguridadConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Permitir acceso a login y a recursos estáticos (ajusta según tu estructura)
-                        .requestMatchers("/Fronted/public/**", "/login.html").permitAll()
-                        // Permitir crear usuario sin autenticar
-                        .requestMatchers("/api/usuarios/crear").permitAll()
-                        // Cualquier otra petición requiere autenticación
-                        .requestMatchers("/api/auth/login").permitAll()
-
-                        //Quitar esto y poner solo las paginas a las que accede!!!!
-                        //Se ve que no permite a todas las rutas xd
-                        .requestMatchers("*").permitAll()
-
-                        // Permitir acceso libre a contratos
-                        .requestMatchers("/api/contratos/**").permitAll()
-
-                        .anyRequest().authenticated()
+                        // 🚧 Permitir todo temporalmente (modo desarrollo)
+                        .anyRequest().permitAll()
                 );
 
         return http.build();

@@ -16,7 +16,7 @@ public class ConfiguracionCORS {
         CorsConfiguration config = new CorsConfiguration();
 
         // Orígenes permitidos (frontend)
-        config.setAllowedOrigins(Arrays.asList("http://localhost:8080"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
 
         // Métodos HTTP permitidos
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
