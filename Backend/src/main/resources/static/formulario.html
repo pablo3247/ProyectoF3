@@ -34,28 +34,41 @@
   </style>
 </head>
 <body>
-  <h2>Registro de Usuario</h2>
-  <form id="registroForm">
-    <input type="text" id="nombre" placeholder="Nombre" required>
-    <input type="text" id="dni" placeholder="DNI" required>
-    <input type="email" id="email" placeholder="Correo electrónico" required>
-    <input type="number" id="telefono" placeholder="Teléfono" required>
-    <input type="password" id="contrasena" placeholder="Contraseña" required>
-    <label><input type="checkbox" id="certificado"> Tiene certificado</label><br>
-    <button type="submit">Registrar</button>
-  </form>
+<h2>Registro de Usuario</h2>
+<form id="registroForm">
+  <input type="text" id="nombre" placeholder="Nombre" required>
+  <input type="text" id="dni" placeholder="DNI" required>
+  <input type="email" id="email" placeholder="Correo electrónico" required>
+  <input type="number" id="telefono" placeholder="Teléfono" required>
+  <input type="password" id="contrasena" placeholder="Contraseña" required>
+  <label><input type="checkbox" id="certificado"> Tiene certificado</label><br>
+  <button type="submit">Registrar</button>
+</form>
 
-  <div class="respuesta" id="respuesta"></div>
+<div class="respuesta" id="respuesta"></div>
 
-  <script>
-    document.getElementById("registroForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
+<script>
+  document.getElementById("registroForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-      const datos = {
-        nombre: document.getElementById("nombre").value.trim(),
-        dni: document.getElementById("dni").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        telefono: document.getElementById("telefono").value.trim(),
-        contrasena: document.getElementById("contrasena").value,
-        certificado: docu
+    const datos = {
+      nombre: document.getElementById("nombre").value.trim(),
+      dni: document.getElementById("dni").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      telefono: document.getElementById("telefono").value.trim(),
+      contrasena: document.getElementById("contrasena").value,
+      certificado: document.getElementById("certificado").checked
+    };
 
+    const respuesta = await fetch("/api/usuarios/crear", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+
+    const resultado = await respuesta.text();
+    document.getElementById("respuesta").textContent = resultado;
+  });
+</script>
+</body>
+</html>
