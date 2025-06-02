@@ -6,42 +6,43 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h1>Login</h1>
-  <form id="loginForm">
-    <label for="usuario">Usuario:</label><br>
-    <input type="text" id="usuario" name="usuario" required><br><br>
+<h1>Login</h1>
+<form id="loginForm">
+  <label for="email">Correo electrónico:</label><br>
+  <input type="email" id="email" name="email" required><br><br>
 
-    <label for="clave">Contraseña:</label><br>
-    <input type="password" id="clave" name="clave" required><br><br>
+  <label for="contrasena">Contraseña:</label><br>
+  <input type="password" id="contrasena" name="contrasena" required><br><br>
 
-    <button type="submit">Iniciar sesión</button>
-  </form>
+  <button type="submit">Iniciar sesión</button>
+</form>
 
-  <p id="mensaje"></p>
+<p id="mensaje"></p>
 
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-      const datos = {
-        usuario: document.getElementById('usuario').value,
-        clave: document.getElementById('clave').value
-      };
+    const datos = {
+      email: document.getElementById('email').value,
+      contrasena: document.getElementById('contrasena').value
+    };
 
-      const respuesta = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      });
-
-      if (respuesta.ok) {
-        const resultado = await respuesta.json();
-        localStorage.setItem('token', resultado.token);
-        document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-      } else {
-        document.getElementById('mensaje').textContent = 'Error al iniciar sesión';
-      }
+    const respuesta = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
     });
-  </script>
+
+    const texto = await respuesta.text();
+    if (respuesta.ok && texto === "Login exitoso") {
+      localStorage.setItem('token', 'FAKE-TOKEN');  // Simulado
+      document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+      window.location.href = '/selector.html';
+    } else {
+      document.getElementById('mensaje').textContent = texto || 'Error al iniciar sesión';
+    }
+  });
+</script>
 </body>
 </html>
