@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Firma del Contrato</title>
+  <meta charset="UTF-8" />
+  <title>Inicio - Sistema de Firma</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: #2b6cb0;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h1>Firma del Contrato</h1>
+  <h1>🚀 Sistema de Gestión de Contratos</h1>
 
-  <label>ID del contrato:</label>
-  <input type="number" id="contratoId"><br><br>
-
-  <label>Firma (formato SVG o JSON):</label><br>
-  <textarea id="firmaDatos" rows="10" cols="50"></textarea><br><br>
-
-  <button onclick="guardarFirma()">Guardar firma temporal</button>
-  <button onclick="verPreview()">Ver PDF de vista previa</button>
-
-  <script>
-    async function guardarFirma() {
-      const contratoId = document.getElementById("contratoId").value;
-      const datosFirma = document.getElementById("firmaDatos").value;
-
-      const response = await fetch("http://localhost:8080/api/contratos/firma-temporal", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contratoId: parseInt(contratoId),
-          datosFirma: datosFirma
-        })
-      });
-
-      const data = await response.text();
-      alert("Respuesta del backend: " + data);
-    }
-
-    function verPreview() {
-      const contratoId = document.getElementById("contratoId").value;
-      window.open("http://localhost:8080/api/contratos/preview/" + contratoId, "_blank");
-    }
-  </script>
+  <ul>
+    <li><a href="formulario.html">📝 Registrar nuevo usuario</a></li>
+    <li><a href="firma.html">✍️ Firmar contrato</a></li>
+    <!-- Puedes agregar más links si haces login.html, verContratos.html, etc. -->
+  </ul>
 </body>
 </html>
+

@@ -1,41 +1,61 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Formulario de Registro</title>
+  <meta charset="UTF-8">
+  <title>Formulario de Registro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    form {
+      max-width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .respuesta {
+      margin-top: 15px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-    <h2>Registro de Usuario</h2>
-    <form id="registroForm">
-        <input type="text" id="nombre" placeholder="Nombre" required><br>
-        <input type="text" id="dni" placeholder="DNI" required><br>
-        <input type="email" id="email" placeholder="Correo electrónico" required><br>
-        <input type="number" id="telefono" placeholder="Teléfono" required><br>
-        <input type="password" id="contrasena" placeholder="Contraseña" required><br>
-        <label><input type="checkbox" id="certificado"> Tiene certificado</label><br>
-        <button type="submit">Registrar</button>
-    </form>
+  <h2>Registro de Usuario</h2>
+  <form id="registroForm">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="text" id="dni" placeholder="DNI" required>
+    <input type="email" id="email" placeholder="Correo electrónico" required>
+    <input type="number" id="telefono" placeholder="Teléfono" required>
+    <input type="password" id="contrasena" placeholder="Contraseña" required>
+    <label><input type="checkbox" id="certificado"> Tiene certificado</label><br>
+    <button type="submit">Registrar</button>
+  </form>
 
-    <script>
-        document.getElementById("registroForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
-            const response = await fetch("/api/usuarios/crear", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    nombre: document.getElementById("nombre").value,
-                    dni: document.getElementById("dni").value,
-                    email: document.getElementById("email").value,
-                    telefono: document.getElementById("telefono").value,
-                    contrasena: document.getElementById("contrasena").value,
-                    certificado: document.getElementById("certificado").checked
-                })
-            });
+  <div class="respuesta" id="respuesta"></div>
 
-            const result = await response.text();
-            alert(result);
-        });
-    </script>
-</body>
-</html>
+  <script>
+    document.getElementById("registroForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const datos = {
+        nombre: document.getElementById("nombre").value.trim(),
+        dni: document.getElementById("dni").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        contrasena: document.getElementById("contrasena").value,
+        certificado: docu
+

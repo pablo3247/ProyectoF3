@@ -1,13 +1,42 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Opciones</title>
+  <meta charset="UTF-8" />
+  <title>Selector de Opciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f2f2f2;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #2b6cb0;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #1a4e85;
+    }
+  </style>
 </head>
 <body>
-    <h2>Selecciona una opción</h2>
-    <button onclick="window.location.href='formulario.html'">Ir al formulario</button>
-    <button onclick="window.location.href='verContratos.html'">Ver contratos</button>
+  <h2>Selecciona una opción</h2>
+
+  <button onclick="window.location.href='formulario.html'">📝 Ir al formulario de registro</button>
+  <button onclick="window.location.href='verContratos.html'">📄 Ver contratos</button>
+  <button onclick="window.location.href='firma.html'">✍️ Firmar contrato</button>
+  <button onclick="window.location.href='index.html'">🏠 Volver al inicio</button>
 </body>
 </html>

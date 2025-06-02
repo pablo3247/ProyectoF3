@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Firma del Contrato</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Firma del Contrato</h1>
+  <label>ID del contrato:</label>
+  <input type="number" id="contratoId"><br><br>
+
+  <label>Firma (SVG o JSON):</label><br>
+  <textarea id="firmaDatos" rows="10" cols="50"></textarea><br><br>
+
+  <button onclick="guardarFirma()">Guardar firma temporal</button>
+  <button onclick="verPreview()">Ver PDF de vista previa</button>
+
+  <script src="js/firma.js"></script>
+</body>
+</html>
