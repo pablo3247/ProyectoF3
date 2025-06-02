@@ -16,7 +16,7 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    input {
+    input, select {
       width: 100%;
       padding: 8px;
       margin: 8px 0;
@@ -42,6 +42,11 @@
   <input type="number" id="telefono" placeholder="Teléfono" required>
   <input type="password" id="contrasena" placeholder="Contraseña" required>
   <label><input type="checkbox" id="certificado"> Tiene certificado</label><br>
+  <label for="rol">Rol:</label>
+  <select id="rol">
+    <option value="USER">Usuario</option>
+    <option value="ADMIN">Administrador</option>
+  </select>
   <button type="submit">Registrar</button>
 </form>
 
@@ -57,7 +62,8 @@
       email: document.getElementById("email").value.trim(),
       telefono: document.getElementById("telefono").value.trim(),
       contrasena: document.getElementById("contrasena").value,
-      certificado: document.getElementById("certificado").checked
+      certificado: document.getElementById("certificado").checked,
+      rol: document.getElementById("rol").value
     };
 
     const respuesta = await fetch("/api/usuarios/crear", {
@@ -72,3 +78,4 @@
 </script>
 </body>
 </html>
+
