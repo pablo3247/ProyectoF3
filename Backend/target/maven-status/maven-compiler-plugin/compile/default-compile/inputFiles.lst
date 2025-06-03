@@ -1,19 +1,21 @@
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/ConfiguracionSeguridad.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/ServicioJwt.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Firma.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/JwtLoginSpringbootApplication.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioUsuario.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorAutenticacion.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/dto/PeticionLogin.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Usuario.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/SpringBootApplication.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/dto/LoginDTO.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioContrato.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/dto/RespuestaLogin.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioFirma.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/FiltroJwt.java
-/home/pablo/IdeaProjects/ProyectoF3/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/ConfiguracionCORS.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\JwtLoginSpringbootApplication.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\configuracion\SeguridadConfig.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\Usuario.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ContratoControlador.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\dto\RespuestaLogin.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\Contrato.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\RepositorioFirma.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ControladorUsuario.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ControladorFirmaTemporal.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\Firma.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\seguridad\ConfiguracionSeguridad.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\dto\LoginDTO.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\seguridad\ServicioJwt.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\SpringBootApplication.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\configuracion\ConfiguracionCORS.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ControladorAutenticacion.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\FirmaTemporal.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\seguridad\FiltroJwt.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\RepositorioContrato.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\RepositorioUsuario.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\dto\PeticionLogin.java
