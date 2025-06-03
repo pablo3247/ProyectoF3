@@ -10,6 +10,7 @@
       background-color: #f9f9f9;
     }
     form {
+      margin: auto;
       max-width: 400px;
       padding: 20px;
       background-color: #fff;
@@ -31,6 +32,14 @@
       margin-top: 15px;
       color: green;
     }
+    .checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  }
+.checkbox-wrapper label {
+  margin-left: 4px;
+  }
+
   </style>
 </head>
 <body>
@@ -41,19 +50,27 @@
   <input type="email" id="email" placeholder="Correo electrónico" required>
   <input type="number" id="telefono" placeholder="Teléfono" required>
   <input type="password" id="contrasena" placeholder="Contraseña" required>
-  <label><input type="checkbox" id="certificado"> Tiene certificado</label><br>
-  <label for="rol">Rol:</label>
-  <select id="rol">
-    <option value="USER">Usuario</option>
-    <option value="ADMIN">Administrador</option>
-  </select>
+
+  <div class="campo checkbox-wrapper">
+    <input type="checkbox" id="certificado" />
+    <label for="certificado">Tiene certificado</label>
+  </div>
+
+  <div class="campo">
+    <label for="rol">Rol:</label>
+    <select id="rol" required>
+      <option value="" disabled selected>Selecciona un rol</option>
+      <option value="USER">Usuario</option>
+      <option value="ADMIN">Administrador</option>
+    </select>
+  </div>
   <button type="submit">Registrar</button>
 </form>
 
 <div class="respuesta" id="respuesta"></div>
 
 <script>
-  document.getElementById("registroForm").addEventListener("submit", async function(e) {
+  document.getElementById("registroForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
     const datos = {
@@ -66,14 +83,11 @@
       rol: document.getElementById("rol").value
     };
 
-    const respuesta = await fetch("/api/usuarios/crear", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos)
-    });
+    // Guardar datos temporalmente
+    sessionStorage.setItem("usuarioResumen", JSON.stringify(datos));
 
-    const resultado = await respuesta.text();
-    document.getElementById("respuesta").textContent = resultado;
+    // Redirigir al resumen
+    window.location.href = "/resumen.html";
   });
 </script>
 </body>

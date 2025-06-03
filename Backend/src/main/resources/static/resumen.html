@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resumen antes de enviar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f4;
+    }
+    .resumen {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+    .campo {
+      margin-bottom: 10px;
+    }
+    .botones {
+      margin-top: 20px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="resumen">
+    <h2>Resumen antes de enviar</h2>
+    <div class="campo"><strong>Nombre:</strong> <span id="nombre"></span></div>
+    <div class="campo"><strong>DNI:</strong> <span id="dni"></span></div>
+    <div class="campo"><strong>Email:</strong> <span id="email"></span></div>
+    <div class="campo"><strong>Teléfono:</strong> <span id="telefono"></span></div>
+    <div class="campo"><strong>Certificado:</strong> <span id="certificado"></span></div>
+    <div class="campo"><strong>Rol:</strong> <span id="rol"></span></div>
+
+    <div class="botones">
+      <button onclick="enviarFormulario()">Confirmar y enviar</button>
+      <button onclick="history.back()">Volver a editar</button>
+    </div>
+  </div>
+
+  <script>
+    // Obtener datos guardados del formulario anterior (por ejemplo desde sessionStorage)
+    const datos = JSON.parse(sessionStorage.getItem("usuarioResumen"));
+
+    if (datos) {
+      document.getElementById("nombre").textContent = datos.nombre;
+      document.getElementById("dni").textContent = datos.dni;
+      document.getElementById("email").textContent = datos.email;
+      document.getElementById("telefono").textContent = datos.telefono;
+      document.getElementById("certificado").textContent = datos.certificado ? "Sí" : "No";
+      document.getElementById("rol").textContent = datos.rol;
+    }
+
+    async function enviarFormulario() {
+      const respuesta = await fetch("/api/usuarios/crear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos)
+      });
+
+      const resultado = await respuesta.text();
+      alert(resultado);
+      if (respuesta.ok) {
+        window.location.href = "/login.html";
+      }
+    }
+  </script>
+</body>
+</html>
