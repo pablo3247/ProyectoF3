@@ -1,45 +1,48 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Login</title>
+  <meta charset="UTF-8" />
+  <title>Inicio - Sistema de Firma</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 10px 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: #2b6cb0;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<h2>Login de Usuario</h2>
-<form id="loginForm">
-  <input type="email" id="email" placeholder="Correo electrónico" required><br>
-  <input type="password" id="password" placeholder="Contraseña" required><br>
-  <button type="submit">Iniciar sesión</button>
-</form>
+  <h1>🚀 Sistema de Gestión de Contratos</h1>
 
-<script>
-  document.getElementById("loginForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      try {
-const response = await fetch("http://localhost:8080/api/auth/login", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                  email: document.getElementById("email").value,
-                  contrasena: document.getElementById("password").value
-              })
-          });
-
-          if (!response.ok) throw new Error("No se pudo conectar con el backend.");
-
-          const result = await response.text();
-          if (result.includes("exitoso")) {
-              alert("✅ Conexión exitosa con la base de datos Supabase");
-              window.location.href = "selector.html";
-          } else {
-              alert("❌ Error: " + result);
-          }
-      } catch (err) {
-          alert("🚫 Error de conexión al backend");
-          alert(console.error(err));
-      }
-  });
-</script>
+  <ul>
+    <li><a href="formulario.html">📝 Registrar nuevo usuario</a></li>
+    <li><a href="firma.html">✍️ Firmar contrato</a></li>
+    <li><a href="login.html">Login</a></li>
+    <!-- Puedes agregar más links si haces login.html, verContratos.html, etc. -->
+  </ul>
 </body>
 </html>
+

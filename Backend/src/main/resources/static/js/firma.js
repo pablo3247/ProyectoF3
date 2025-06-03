@@ -1,15 +1,21 @@
 async function guardarFirma() {
   const contratoId = document.getElementById("contratoId").value;
-  const datosFirma = document.getElementById("firmaDatos").value;
+  if (!contratoId) {
+    alert("Por favor ingresa un ID de contrato.");
+    return;
+  }
 
-  const response = await fetch("/api/contratos/firma-temporal", {
+  const canvas = document.getElementById("canvasFirma");
+  const firmaBase64 = canvas.toDataURL("image/png");
+
+  const response = await fetch("/api/firmas-temporales", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       contratoId: parseInt(contratoId),
-      datosFirma: datosFirma
+      imagenBase64: firmaBase64
     })
   });
 
@@ -19,11 +25,20 @@ async function guardarFirma() {
 
 function verPreview() {
   const contratoId = document.getElementById("contratoId").value;
-  window.open("/api/contratos/preview/" + contratoId, "_blank");
+  if (!contratoId) {
+    alert("Por favor ingresa un ID de contrato.");
+    return;
+  }
+  window.open("/api/firmas-temporales/preview/" + contratoId, "_blank");
 }
 
+function limpiarCanvas() {
+  const canvas = document.getElementById("canvasFirma");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 
-
+// Código para dibujar en el canvas
 const canvas = document.getElementById('canvasFirma');
 const ctx = canvas.getContext('2d');
 let dibujando = false;
@@ -33,26 +48,15 @@ canvas.addEventListener('mouseup', () => dibujando = false);
 canvas.addEventListener('mouseout', () => dibujando = false);
 canvas.addEventListener('mousemove', dibujar);
 
-function dibujar(evento) {
+function dibujar(event) {
   if (!dibujando) return;
-  const rect = canvas.getBoundingClientRect();
-  const x = evento.clientX - rect.left;
-  const y = evento.clientY - rect.top;
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
   ctx.strokeStyle = '#000';
-  ctx.lineTo(x, y);
+
+  const rect = canvas.getBoundingClientRect();
+  ctx.lineTo(event.clientX - rect.left, event.clientY - rect.top);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(x, y);
-}
-
-function limpiarCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
-}
-
-function guardarCanvasComoImagen() {
-  const dataURL = canvas.toDataURL('image/png');
-  document.getElementById('firmaDatos').value = dataURL;
+  ctx.moveTo(event.clientX - rect.left, event.clientY - rect.top);
 }
