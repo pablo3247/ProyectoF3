@@ -22,7 +22,8 @@ public class ConfiguracionCORS {
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         // Headers permitidos (puedes restringir si quieres)
-        config.setAllowedHeaders(Arrays.asList("*"));
+        //Redundante
+        //config.setAllowedHeaders(Arrays.asList("*"));
 
         // Permitir enviar credenciales (cookies, auth headers)
         config.setAllowCredentials(true);
