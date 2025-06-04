@@ -22,6 +22,7 @@ public class SeguridadConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // 🚧 Permitir todo temporalmente (modo desarrollo)
+                        //Cambiar cuando se deje de hacer pruebas para solo permitir el login!
                         .anyRequest().permitAll()
                 );
 
