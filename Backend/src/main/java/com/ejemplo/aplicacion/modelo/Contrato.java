@@ -20,4 +20,7 @@ public class Contrato {
     public void setArchivoPDF(String archivoPDF) { this.archivoPDF = archivoPDF; }
     public boolean getFirmado() { return firmado; }
     public void setFirmado(boolean firmado) { this.firmado = firmado; }
+
+    public Contrato() {} // Constructor vacío
+
 }
