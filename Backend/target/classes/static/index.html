@@ -2,47 +2,52 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Inicio - Sistema de Firma</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f0f0f0;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      margin: 10px 0;
-    }
-
-    a {
-      text-decoration: none;
-      color: #2b6cb0;
-      font-weight: bold;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <title>Iniciar Sesión</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h1>🚀 Sistema de Gestión de Contratos</h1>
+<h1>Login</h1>
 
-  <ul>
-    <li><a href="formulario.html">📝 Registrar nuevo usuario</a></li>
-    <li><a href="firma.html">✍️ Firmar contrato</a></li>
-    <li><a href="login.html">Login</a></li>
-    <!-- Puedes agregar más links si haces login.html, verContratos.html, etc. -->
-  </ul>
+<form id="loginForm">
+  <label for="email">Correo electrónico:</label><br>
+  <input type="email" id="email" name="email" required><br><br>
+
+  <label for="contrasena">Contraseña:</label><br>
+  <input type="password" id="contrasena" name="contrasena" required><br><br>
+
+  <button type="submit">Iniciar sesión</button>
+</form>
+
+<p id="mensaje"></p>
+
+
+<p>¿No tienes cuenta?</p>
+<button onclick="window.location.href='/formulario.html'">Registrarse</button>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const datos = {
+      email: document.getElementById('email').value,
+      contrasena: document.getElementById('contrasena').value
+    };
+
+    const respuesta = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
+    });
+
+    const texto = await respuesta.text();
+    if (respuesta.ok && texto === "Login exitoso") {
+      localStorage.setItem('token', 'FAKE-TOKEN');  // Simulado
+      document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+      window.location.href = '/selector.html';
+    } else {
+      document.getElementById('mensaje').textContent = texto || 'Error al iniciar sesión';
+    }
+  });
+</script>
 </body>
 </html>
-

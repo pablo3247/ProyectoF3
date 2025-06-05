@@ -1,9 +1,12 @@
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\AuditLog.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\JwtLoginSpringbootApplication.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\configuracion\SeguridadConfig.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\AuditLogControlador.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\Usuario.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ContratoControlador.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\dto\RespuestaLogin.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\modelo\Contrato.java
+E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\AuditLogRepositorio.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\RepositorioFirma.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ControladorUsuario.java
 E:\proyecto git-hub\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ControladorFirmaTemporal.java
