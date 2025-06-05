@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Resumen antes de enviar</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -35,47 +36,47 @@
   </style>
 </head>
 <body>
-  <div class="resumen">
-    <h2>Resumen antes de enviar</h2>
-    <div class="campo"><strong>Nombre:</strong> <span id="nombre"></span></div>
-    <div class="campo"><strong>DNI:</strong> <span id="dni"></span></div>
-    <div class="campo"><strong>Email:</strong> <span id="email"></span></div>
-    <div class="campo"><strong>Teléfono:</strong> <span id="telefono"></span></div>
-    <div class="campo"><strong>Certificado:</strong> <span id="certificado"></span></div>
-    <div class="campo"><strong>Rol:</strong> <span id="rol"></span></div>
+<div class="resumen">
+  <h2 style='color: #43a047; text-align: center;'>Confirmación / Resumen</h2>
+  <div class="campo"><strong>Nombre:</strong> <span id="nombre"></span></div>
+  <div class="campo"><strong>DNI:</strong> <span id="dni"></span></div>
+  <div class="campo"><strong>Email:</strong> <span id="email"></span></div>
+  <div class="campo"><strong>Teléfono:</strong> <span id="telefono"></span></div>
+  <div class="campo"><strong>Certificado:</strong> <span id="certificado"></span></div>
+  <div class="campo"><strong>Rol:</strong> <span id="rol"></span></div>
 
-    <div class="botones">
-      <button onclick="enviarFormulario()">Confirmar y enviar</button>
-      <button onclick="history.back()">Volver a editar</button>
-    </div>
+  <div class="botones">
+    <button onclick="enviarFormulario()">Confirmar y enviar</button>
+    <button onclick="history.back()">Volver a editar</button>
   </div>
+</div>
 
-  <script>
-    // Obtener datos guardados del formulario anterior (por ejemplo desde sessionStorage)
-    const datos = JSON.parse(sessionStorage.getItem("usuarioResumen"));
+<script>
+  // Obtener datos guardados del formulario anterior (por ejemplo desde sessionStorage)
+  const datos = JSON.parse(sessionStorage.getItem("usuarioResumen"));
 
-    if (datos) {
-      document.getElementById("nombre").textContent = datos.nombre;
-      document.getElementById("dni").textContent = datos.dni;
-      document.getElementById("email").textContent = datos.email;
-      document.getElementById("telefono").textContent = datos.telefono;
-      document.getElementById("certificado").textContent = datos.certificado ? "Sí" : "No";
-      document.getElementById("rol").textContent = datos.rol;
+  if (datos) {
+    document.getElementById("nombre").textContent = datos.nombre;
+    document.getElementById("dni").textContent = datos.dni;
+    document.getElementById("email").textContent = datos.email;
+    document.getElementById("telefono").textContent = datos.telefono;
+    document.getElementById("certificado").textContent = datos.certificado ? "Sí" : "No";
+    document.getElementById("rol").textContent = datos.rol;
+  }
+
+  async function enviarFormulario() {
+    const respuesta = await fetch("/api/usuarios/crear", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    });
+
+    const resultado = await respuesta.text();
+    alert(resultado);
+    if (respuesta.ok) {
+      window.location.href = "/login.html";
     }
-
-    async function enviarFormulario() {
-      const respuesta = await fetch("/api/usuarios/crear", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos)
-      });
-
-      const resultado = await respuesta.text();
-      alert(resultado);
-      if (respuesta.ok) {
-        window.location.href = "/login.html";
-      }
-    }
-  </script>
+  }
+</script>
 </body>
 </html>

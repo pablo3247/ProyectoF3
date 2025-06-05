@@ -1,40 +1,23 @@
 package com.ejemplo.aplicacion.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "contratos")
 public class Contrato {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
-    private String dni;
-    private String email;
-    private String estado; // pendiente, firmado, enviado, etc.
-
-    private LocalDateTime fechaFirma;
-
-    // Getters y setters
+    private String archivoPDF;
+    private boolean firmado;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public LocalDateTime getFechaFirma() { return fechaFirma; }
-    public void setFechaFirma(LocalDateTime fechaFirma) { this.fechaFirma = fechaFirma; }
+    public String getArchivoPDF() { return archivoPDF; }
+    public void setArchivoPDF(String archivoPDF) { this.archivoPDF = archivoPDF; }
+    public boolean getFirmado() { return firmado; }
+    public void setFirmado(boolean firmado) { this.firmado = firmado; }
 }

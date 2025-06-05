@@ -5,23 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="03/06">
-      <change afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/AuditLogControlador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/AuditLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/AuditLogRepositorio.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioContrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioContrato.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/ConfiguracionCORS.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/ConfiguracionCORS.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/repositorio/RepositorioContrato.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/repositorio/RepositorioContrato.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/formulario.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/formulario.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/temp_firmas/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/temp_firmas/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +32,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/pablo3247/ProyectoF3.git&quot;,
-    &quot;accountId&quot;: &quot;e3f59d4f-284c-4303-a69d-1579dfe70b1f&quot;
+    &quot;accountId&quot;: &quot;488b2337-001b-439f-b5b9-e03b7510f36d&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
