@@ -1,12 +1,93 @@
+/* === Reset básico === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Arial, sans-serif;
-  margin: 40px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  line-height: 1.5;
 }
 
-textarea {
+/* === Formulario general === */
+form {
+  background-color: #fff;
+  padding: 20px;
+  margin: auto;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input, select, textarea, button {
   width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
 }
 
+/* === Botones === */
 button {
-  margin-right: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* === Tablas === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow-x: auto;
+  display: block;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+/* === Mensajes === */
+.mensaje, .respuesta {
+  margin-top: 10px;
+  color: green;
+  font-weight: bold;
+}
+
+/* === Firma canvas === */
+canvas {
+  border: 1px solid #000;
+  margin: 10px 0;
+  max-width: 100%;
+}
+
+/* === Responsive Mobile First === */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  form, table {
+    width: 100%;
+  }
+
+  .acciones button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }
