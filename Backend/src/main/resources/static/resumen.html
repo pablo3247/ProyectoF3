@@ -36,7 +36,7 @@
   </style>
 </head>
 <body>
-<div class="resumen">
+<div class="resumen" id="contenidoContrato">
   <h2 style='color: #43a047; text-align: center;'>Confirmación / Resumen</h2>
   <div class="campo"><strong>Nombre:</strong> <span id="nombre"></span></div>
   <div class="campo"><strong>DNI:</strong> <span id="dni"></span></div>
@@ -48,11 +48,12 @@
   <div class="botones">
     <button onclick="enviarFormulario()">Confirmar y enviar</button>
     <button onclick="history.back()">Volver a editar</button>
+    <button onclick="descargarContrato()">Descargar contrato completo</button>
   </div>
 </div>
 
+<!-- Script para cargar datos y enviar -->
 <script>
-  // Obtener datos guardados del formulario anterior (por ejemplo desde sessionStorage)
   const datos = JSON.parse(sessionStorage.getItem("usuarioResumen"));
 
   if (datos) {
@@ -78,5 +79,25 @@
     }
   }
 </script>
+
+<!-- Script para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script>
+  function descargarContrato() {
+    const elemento = document.getElementById("contenidoContrato");
+
+    const opciones = {
+      margin: 10,
+      filename: 'contrato_completo.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opciones).from(elemento).save();
+  }
+</script>
+
 </body>
 </html>
+
