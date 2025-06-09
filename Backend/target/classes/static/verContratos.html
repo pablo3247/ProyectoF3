@@ -44,105 +44,113 @@
   </style>
 </head>
 <body>
-  <h1>📄 Lista de Contratos</h1>
+<h1>📄 Lista de Contratos</h1>
 
-  <div>
-    <input type="text" id="nombre" placeholder="Nombre del contrato" required />
-    <input type="text" id="archivoPDF" placeholder="Archivo PDF (URL o nombre)" />
-    <button onclick="crearContrato()">➕ Crear Contrato</button>
-    <a href="index.html"><button>🏠 Volver al menú</button></a>
-  </div>
+<div>
+  <input type="text" id="nombre" placeholder="Nombre del contrato" required />
+  <input type="text" id="archivoPDF" placeholder="Archivo PDF (URL o nombre)" />
+  <button onclick="crearContrato()">➕ Crear Contrato</button>
+</div>
 
-  <div class="mensaje" id="mensaje"></div>
+<table id="tablaContratos">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>PDF</th>
+    <th>Acciones</th>
+  </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-  <table id="tablaContratos">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Archivo PDF</th>
-        <th>Firmado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<hr>
+<h2>📤 Subir nuevo contrato (PDF)</h2>
+<form id="formSubirContrato" enctype="multipart/form-data">
+  <label for="archivo">Selecciona archivo PDF:</label>
+  <input type="file" id="archivo" name="archivo" accept="application/pdf" required />
+  <input type="number" id="contratoId" name="contratoId" placeholder="ID Contrato" required />
+  <button type="submit">Subir Contrato</button>
+</form>
 
-  <script>
-    const API_URL = "/api/contratos";
-    const mensaje = document.getElementById("mensaje");
+<p id="mensajeSubida" class="mensaje"></p>
 
-    async function cargarContratos() {
-      const response = await fetch(API_URL);
-      const contratos = await response.json();
-      const tbody = document.querySelector("#tablaContratos tbody");
-      tbody.innerHTML = "";
-
-      contratos.forEach(c => {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-          <td>${c.id}</td>
-          <td>${c.nombre}</td>
-          <td>${c.archivoPDF || '-'}</td>
-          <td>${c.firmado ? "✅ Sí" : "❌ No"}</td>
-          <td class="acciones">
-            <button onclick="eliminarContrato(${c.id})">🗑️ Eliminar</button>
-            <button onclick="firmarContrato(${c.id}, ${c.firmado})">
-              ${c.firmado ? "❌ Desfirmar" : "✍️ Firmar"}
-            </button>
-          </td>
-        `;
-        tbody.appendChild(fila);
+<script>
+  function cargarContratos() {
+    fetch("/api/contratos")
+      .then(res => {
+        if (!res.ok) throw new Error("No se pudo cargar contratos");
+        return res.json();
+      })
+      .then(data => {
+        if (!Array.isArray(data)) throw new Error("La respuesta no es un array");
+        const tbody = document.querySelector("#tablaContratos tbody");
+        tbody.innerHTML = "";
+        data.forEach(contrato => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${contrato.id}</td>
+            <td>${contrato.nombre}</td>
+            <td>${contrato.archivoPDF || "-"}</td>
+            <td class="acciones">
+              <button onclick="eliminarContrato(${contrato.id})">🗑 Eliminar</button>
+            </td>`;
+          tbody.appendChild(fila);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error al cargar contratos");
       });
-    }
+  }
 
-    async function crearContrato() {
-      const nombre = document.getElementById("nombre").value.trim();
-      const archivoPDF = document.getElementById("archivoPDF").value.trim();
+  function crearContrato() {
+    const nombre = document.getElementById("nombre").value;
+    const archivoPDF = document.getElementById("archivoPDF").value;
 
-      if (!nombre) {
-        alert("⚠️ El nombre del contrato es obligatorio.");
-        return;
-      }
-
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, archivoPDF, firmado: false })
-      });
-
+    fetch("/api/contratos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre, archivoPDF })
+    })
+    .then(res => res.text())
+    .then(() => {
       document.getElementById("nombre").value = "";
       document.getElementById("archivoPDF").value = "";
-
-      mensaje.textContent = "✅ Contrato creado correctamente.";
       cargarContratos();
-    }
+    })
+    .catch(err => alert("Error al crear contrato"));
+  }
 
-    async function eliminarContrato(id) {
-      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-      mensaje.textContent = "🗑️ Contrato eliminado.";
+  function eliminarContrato(id) {
+    fetch(`/api/contratos/${id}`, { method: "DELETE" })
+      .then(() => cargarContratos())
+      .catch(err => alert("Error al eliminar contrato"));
+  }
+
+  document.getElementById("formSubirContrato").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const id = document.getElementById("contratoId").value;
+    const archivo = document.getElementById("archivo").files[0];
+    const formData = new FormData();
+    formData.append("file", archivo);
+
+    fetch("/api/contratos/" + id + "/subir-pdf", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("mensajeSubida").innerText = data;
       cargarContratos();
-    }
+    })
+    .catch(error => {
+      document.getElementById("mensajeSubida").innerText = "❌ Error al subir contrato";
+    });
+  });
 
-    async function firmarContrato(id, actual) {
-      const response = await fetch(`${API_URL}/${id}`);
-      const contrato = await response.json();
-      contrato.firmado = !actual;
-
-      await fetch(`${API_URL}/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(contrato)
-      });
-
-      mensaje.textContent = contrato.firmado
-        ? "✍️ Contrato firmado."
-        : "❌ Firma eliminada.";
-      cargarContratos();
-    }
-
-    // Cargar lista al iniciar
-    window.onload = cargarContratos;
-  </script>
+  window.onload = cargarContratos;
+</script>
 </body>
 </html>
