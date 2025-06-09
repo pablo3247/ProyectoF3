@@ -33,10 +33,19 @@
       margin: 5px;
       cursor: pointer;
     }
+    #firmaPreview {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #firmaPreview img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
-<div class="resumen">
+<div class="resumen" id="contenidoContrato">
   <h2 style='color: #43a047; text-align: center;'>Confirmación / Resumen</h2>
   <div class="campo"><strong>Nombre:</strong> <span id="nombre"></span></div>
   <div class="campo"><strong>DNI:</strong> <span id="dni"></span></div>
@@ -45,15 +54,21 @@
   <div class="campo"><strong>Certificado:</strong> <span id="certificado"></span></div>
   <div class="campo"><strong>Rol:</strong> <span id="rol"></span></div>
 
+  <div id="firmaPreview">
+    <strong>Firma:</strong><br>
+    <img id="firmaImagen" src="" alt="Firma del usuario" />
+  </div>
+
   <div class="botones">
     <button onclick="enviarFormulario()">Confirmar y enviar</button>
     <button onclick="history.back()">Volver a editar</button>
+    <button onclick="descargarContrato()">Descargar contrato completo</button>
   </div>
 </div>
 
 <script>
-  // Obtener datos guardados del formulario anterior (por ejemplo desde sessionStorage)
   const datos = JSON.parse(sessionStorage.getItem("usuarioResumen"));
+  const firmaImagen = sessionStorage.getItem("firmaImagen");
 
   if (datos) {
     document.getElementById("nombre").textContent = datos.nombre;
@@ -64,11 +79,17 @@
     document.getElementById("rol").textContent = datos.rol;
   }
 
+  if (firmaImagen) {
+    document.getElementById("firmaImagen").src = firmaImagen;
+  }
+
   async function enviarFormulario() {
+    const cuerpo = { ...datos, firma: firmaImagen };
+
     const respuesta = await fetch("/api/usuarios/crear", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos)
+      body: JSON.stringify(cuerpo)
     });
 
     const resultado = await respuesta.text();
@@ -78,5 +99,24 @@
     }
   }
 </script>
+
+<!-- Script para generar PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script>
+  function descargarContrato() {
+    const elemento = document.getElementById("contenidoContrato");
+
+    const opciones = {
+      margin: 10,
+      filename: 'contrato_firmado.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opciones).from(elemento).save();
+  }
+</script>
+
 </body>
 </html>
