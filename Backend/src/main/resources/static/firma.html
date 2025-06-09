@@ -1,27 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Firma del Contrato</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    canvas {
+      border: 2px solid #000;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #2b6cb0;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1a4e85;
+    }
+  </style>
 </head>
 <body>
-<h1>Firma del Contrato</h1>
-<label>ID del contrato:</label>
-<input type="number" id="contratoId"><br><br>
 
-<label>Firma (SVG o JSON):</label><br>
-<textarea id="firmaDatos" rows="10" cols="50"></textarea><br><br>
+<h2>Firma el contrato con tu dedo</h2>
 
-<button onclick="guardarFirma()">Guardar firma temporal</button>
-<button onclick="verPreview()">Ver PDF de vista previa</button>
+<canvas id="canvasFirma" width="500" height="200"></canvas><br>
 
+<button onclick="limpiarCanvas()">🧹 Limpiar</button>
+<button onclick="guardarYContinuar()">✅ Guardar y continuar</button>
 
-<h3>Firma manual</h3>
-<canvas id="canvasFirma" width="500" height="200" style="border:1px solid #000;"></canvas><br>
-<button onclick="limpiarCanvas()">Limpiar</button>
-<button onclick="guardarCanvasComoImagen()">Guardar firma como imagen</button>
+<script>
+  const canvas = document.getElementById('canvasFirma');
+  const ctx = canvas.getContext('2d');
+  let pintando = false;
 
-<script src="js/firma.js"></script>
+  canvas.addEventListener('mousedown', e => {
+    pintando = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+  });
+
+  canvas.addEventListener('mousemove', e => {
+    if (pintando) {
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+    }
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    pintando = false;
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    pintando = false;
+  });
+
+  // Touch para móviles
+  canvas.addEventListener('touchstart', e => {
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    e.preventDefault();
+  });
+
+  canvas.addEventListener('touchmove', e => {
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.stroke();
+    e.preventDefault();
+  });
+
+  function limpiarCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function guardarYContinuar() {
+    const datos = sessionStorage.getItem("datosContrato");
+    if (!datos) {
+      alert("No se encontraron datos del contrato.");
+      return;
+    }
+
+    const firmaImagen = canvas.toDataURL("image/png");
+    sessionStorage.setItem("firmaImagen", firmaImagen);
+
+    window.location.href = "resumen.html";
+  }
+</script>
+
 </body>
 </html>

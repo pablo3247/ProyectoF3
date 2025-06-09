@@ -35,4 +35,10 @@ public class ContratoControlador {
 
         return respuesta;
     }
+
+    @GetMapping
+    public List<Contrato> obtenerTodosLosContratos() {
+        return contratoRepositorio.findAll();
+    }
+
 }
