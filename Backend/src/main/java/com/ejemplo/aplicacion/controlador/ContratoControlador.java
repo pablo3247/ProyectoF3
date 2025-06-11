@@ -6,6 +6,7 @@ import com.ejemplo.aplicacion.repositorio.RepositorioContrato;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -80,5 +82,41 @@ public class ContratoControlador {
     public List<Contrato> obtenerTodosLosContratos() {
         return contratoRepositorio.findAll();
     }
+
+    @GetMapping("/buscar/dni")
+    public List<Contrato> buscarPorDni(@RequestParam String dni) {
+        return contratoRepositorio.findByDniContainingIgnoreCase(dni);
+    }
+
+    @GetMapping("/buscar/apellidos")
+    public List<Contrato> buscarPorApellidos(@RequestParam String apellidos) {
+        return contratoRepositorio.findByApellidosContainingIgnoreCase(apellidos);
+    }
+
+    @GetMapping("/buscar/fecha")
+    public List<Contrato> buscarPorFecha(@RequestParam String desde, @RequestParam String hasta) {
+        LocalDate inicio = LocalDate.parse(desde);
+        LocalDate fin = LocalDate.parse(hasta);
+        return contratoRepositorio.findByFechaFirmaBetween(inicio, fin);
+    }
+
+    @GetMapping("/filtrar")
+    public List<Contrato> filtrarContratos(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) String apellidos,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta) {
+
+        if (dni != null && !dni.isEmpty()) {
+            return contratoRepositorio.findByDniContainingIgnoreCase(dni);
+        } else if (apellidos != null && !apellidos.isEmpty()) {
+            return contratoRepositorio.findByApellidosContainingIgnoreCase(apellidos);
+        } else if (desde != null && hasta != null) {
+            return contratoRepositorio.findByFechaFirmaBetween(desde, hasta);
+        } else {
+            return contratoRepositorio.findAll(); // si no hay filtros, devuelve todos
+        }
+    }
+
 
 }
