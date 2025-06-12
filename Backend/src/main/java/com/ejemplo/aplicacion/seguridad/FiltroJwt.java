@@ -40,7 +40,7 @@ public class FiltroJwt extends OncePerRequestFilter {
 
             if (servicioJwt.validarToken(token)) {
                 String identificador = servicioJwt.extraerIdentificador(token);
-                String rol = servicioJwt.extraerRol(token);
+                String rol ="ROLE_" + servicioJwt.extraerRol(token);
 
                 User usuarioSpring = new User(
                         identificador,

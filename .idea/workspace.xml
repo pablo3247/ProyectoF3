@@ -5,8 +5,53 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="12/06">
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/ConfiguracionSeguridad.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/ConfiguracionSeguridad.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/FiltroJwt.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/FiltroJwt.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/selector.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/selector.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ContratoControlador.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/.env.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/.env.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/api/usuarioAPI.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/librerias/pdfjs/pdf.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/librerias/pdfjs/pdf.worker.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/pdf/contrato.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/public/contrato.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/FirmaCanvas.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/FormularioUsuario.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/Login.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/Login.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/components/VisorPDF.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/services/axiosService.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fronted/src/services/usuarioAPI.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nerd-emoticon-vector-478612.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/JwtLoginSpringbootApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/SpringBootApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/configuracion/ConfiguracionCORS.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/controlador/ControladorAutenticacion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/controlador/ControladorUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/dto/LoginDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/dto/PeticionLogin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/dto/RespuestaLogin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/modelo/Firma.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/modelo/FirmaTemporal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/modelo/Usuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/repositorio/RepositorioContrato.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/repositorio/RepositorioFirma.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/repositorio/RepositorioUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/seguridad/ConfiguracionSeguridad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/seguridad/FiltroJwt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ejemplo/aplicacion/seguridad/ServicioJwt.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,12 +74,12 @@
     &quot;assignee&quot;: &quot;raquelbenages&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/pablo3247/ProyectoF3.git&quot;,
-    &quot;accountId&quot;: &quot;488b2337-001b-439f-b5b9-e03b7510f36d&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/pablo3247/ProyectoF3.git",
+    "accountId": "e6fcde1d-93fc-4d18-b31a-cbe60494bc22"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -43,15 +88,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.JwtLoginSpringbootApplication.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.JwtLoginSpringbootApplication.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="JwtLoginSpringbootApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.ejemplo.aplicacion.JwtLoginSpringbootApplication" />
