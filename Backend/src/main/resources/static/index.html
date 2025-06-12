@@ -28,6 +28,7 @@
   document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
+
     const datos = {
       email: document.getElementById('email').value,
       contrasena: document.getElementById('contrasena').value
@@ -39,7 +40,14 @@
       body: JSON.stringify(datos)
     });
 
-    const texto = await respuesta.text();
+    const data = await respuesta.json();
+    if (respuesta.ok && data.mensaje === "Login exitoso") {
+    localStorage.setItem('token', 'FAKE-TOKEN'); // Simulado
+    localStorage.setItem('rol', data.rol); // Guardamos el rol
+    document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+    window.location.href = '/selector.html';
+    }
+
     if (respuesta.ok && texto === "Login exitoso") {
       localStorage.setItem('token', 'FAKE-TOKEN');  // Simulado
       document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';

@@ -21,11 +21,13 @@ public class SeguridadConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 🚧 Permitir todo temporalmente (modo desarrollo)
-                        //Cambiar cuando se deje de hacer pruebas para solo permitir el login!
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/auth/login", "/api/usuarios/crear").permitAll()
+                        .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USUARIO")
+                        .requestMatchers("/api/contratos/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
                 );
 
         return http.build();
     }
+
 }
