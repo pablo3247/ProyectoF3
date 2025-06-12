@@ -40,32 +40,22 @@
         body: JSON.stringify(datos)
       });
 
-      const texto = await respuesta.text();
+      const data = await respuesta.json();
 
-      if (respuesta.ok) {
-        // Suponemos que el backend devuelve algo como: {"mensaje":"Login exitoso", "rol":"ADMIN"}
-        try {
-          const data = JSON.parse(texto);
-          if (data.mensaje === "Login exitoso") {
-            localStorage.setItem('token', 'FAKE-TOKEN');
-            localStorage.setItem('rol', data.rol || 'USUARIO');
-            document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-            window.location.href = '/selector.html';
-          } else {
-            document.getElementById('mensaje').textContent = data.mensaje || 'Respuesta inesperada';
-          }
-        } catch {
-          document.getElementById('mensaje').textContent = texto || 'Login fallido';
-        }
+      if (respuesta.ok && data.mensaje === "Login exitoso") {
+        localStorage.setItem('token', data.token || 'FAKE-TOKEN');
+        localStorage.setItem('rol', data.rol);
+        document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+        window.location.href = '/selector.html';
       } else {
-        document.getElementById('mensaje').textContent = texto || 'Error al iniciar sesión';
+        document.getElementById('mensaje').textContent = data.mensaje || 'Error al iniciar sesión';
       }
-
     } catch (error) {
-      document.getElementById('mensaje').textContent = 'Error de red: ' + error.message;
+      document.getElementById('mensaje').textContent = 'Error de conexión al iniciar sesión';
     }
   });
 </script>
+
 
 </body>
 </html>

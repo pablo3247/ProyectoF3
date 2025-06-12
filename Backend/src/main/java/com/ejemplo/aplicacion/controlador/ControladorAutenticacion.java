@@ -4,8 +4,12 @@ import com.ejemplo.aplicacion.dto.LoginDTO;
 import com.ejemplo.aplicacion.modelo.Usuario;
 import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -17,21 +21,26 @@ public class ControladorAutenticacion {
     private RepositorioUsuario repositorioUsuario;
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDTO credenciales) {
-        Optional<Usuario> usuario = repositorioUsuario.findByEmail(credenciales.getEmail());
-        if (usuario.isPresent()) {
-            System.out.println("Usuario encontrado: " + usuario.get().getEmail());
-            if (usuario.get().getContrasena().equals(credenciales.getContrasena())) {
-                System.out.println("Contraseña válida");
-                return "Login exitoso";
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginDTO credenciales) {
+        Optional<Usuario> usuarioOpt = repositorioUsuario.findByEmail(credenciales.getEmail());
+
+        Map<String, Object> respuesta = new HashMap<>();
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            if (usuario.getContrasena().equals(credenciales.getContrasena())) {
+                respuesta.put("mensaje", "Login exitoso");
+                respuesta.put("rol", usuario.getRol());
+                return ResponseEntity.ok(respuesta);
             } else {
-                System.out.println("Contraseña inválida");
-                return "Credenciales inválidas";
+                respuesta.put("mensaje", "Contraseña incorrecta");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
             }
         } else {
-            System.out.println("Usuario no encontrado");
-            return "Credenciales inválidas";
+            respuesta.put("mensaje", "Usuario no encontrado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
         }
     }
 
 }
+
