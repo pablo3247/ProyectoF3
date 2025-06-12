@@ -21,7 +21,18 @@ public class SeguridadConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/usuarios/crear").permitAll()
+                        // 💡 Rutas públicas (puedes añadir más si tienes .js, .css, etc.)
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/formulario.html",
+                                "/selector.html",
+                                "/css/**",
+                                "/js/**",
+                                "/api/auth/login",
+                                "/api/usuarios/crear"
+                        ).permitAll()
+                        // 🔐 Rutas protegidas
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USUARIO")
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -29,8 +40,5 @@ public class SeguridadConfig {
 
         return http.build();
     }
-
-
-
-
 }
+
