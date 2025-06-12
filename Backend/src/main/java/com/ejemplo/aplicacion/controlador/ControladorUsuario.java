@@ -24,25 +24,25 @@ public class ControladorUsuario {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> credenciales) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credenciales) {
         String email = credenciales.get("email");
         String contrasena = credenciales.get("contrasena");
 
         Optional<Usuario> usuarioOpt = repositorioUsuario.findByEmail(email);
         if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Usuario usuario = usuarioOpt.get();
         if (!usuario.getContrasena().equals(contrasena)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Map<String, String> respuesta = new HashMap<>();
         respuesta.put("mensaje", "Login exitoso");
         respuesta.put("rol", usuario.getRol());
-        return ResponseEntity.ok(respuesta);
 
+        return ResponseEntity.ok(respuesta);
     }
 
     @GetMapping
