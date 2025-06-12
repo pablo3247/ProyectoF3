@@ -33,10 +33,27 @@
   </style>
 </head>
 <body>
-<h2>Panel de Contratos</h2>
+<h2>Selecciona una opción</h2>
+<div id="opciones"></div>
 
-<button onclick="window.location.href='nuevoContrato.html'">📝 Hacer nuevo contrato</button>
-<button onclick="window.location.href='verContratos.html'">📝 Ver contrato</button>
-<button onclick="window.location.href='index.html'">🏠 Volver al inicio</button>
+<script>
+  const rol = localStorage.getItem('rol');
+  const contenedor = document.getElementById('opciones');
+
+  if (rol === "admin") {
+    contenedor.innerHTML = `
+      <button onclick="window.location.href='nuevoContrato.html'">➕ Nuevo contrato</button>
+      <button onclick="window.location.href='verContratos.html'">📄 Ver contratos</button>
+      <button onclick="window.location.href='gestionarContratos.html'">⚙️ Gestionar contratos</button>
+      <button onclick="window.location.href='index.html'">🔓 Cerrar sesión</button>
+    `;
+  } else {
+    contenedor.innerHTML = `
+      <button onclick="window.location.href='nuevoContrato.html'">📝 Nuevo contrato</button>
+      <button onclick="window.location.href='index.html'">🔓 Cerrar sesión</button>
+    `;
+  }
+</script>
 </body>
+
 </html>
