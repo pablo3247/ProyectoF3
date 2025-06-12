@@ -21,7 +21,6 @@ public class SeguridadConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/api/auth/login", "/api/usuarios/crear").permitAll()
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USUARIO")
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
@@ -30,6 +29,7 @@ public class SeguridadConfig {
 
         return http.build();
     }
+
 
 
 
