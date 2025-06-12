@@ -21,25 +21,16 @@ public class SeguridadConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 👉 Archivos públicos del frontend
-                        .requestMatchers(
-                                "/index.html", "/login.html", "/selector.html", "/formulario.html", "/firma.html", "/resumen.html",
-                                "/css/**", "/js/**", "/images/**", "/", "/favicon.ico"
-                        ).permitAll()
-
-                        // 👉 APIs abiertas
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/api/auth/login", "/api/usuarios/crear").permitAll()
-
-                        // 👉 APIs restringidas
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USUARIO")
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
-
-                        // 👉 Todo lo demás necesita autenticación
                         .anyRequest().authenticated()
                 );
 
         return http.build();
     }
+
 
 
 }

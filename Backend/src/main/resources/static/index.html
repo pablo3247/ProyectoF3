@@ -28,34 +28,44 @@
   document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-
     const datos = {
       email: document.getElementById('email').value,
       contrasena: document.getElementById('contrasena').value
     };
 
-    const respuesta = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datos)
-    });
+    try {
+      const respuesta = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
 
-    const data = await respuesta.json();
-    if (respuesta.ok && data.mensaje === "Login exitoso") {
-    localStorage.setItem('token', 'FAKE-TOKEN'); // Simulado
-    localStorage.setItem('rol', data.rol); // Guardamos el rol
-    document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-    window.location.href = '/selector.html';
-    }
+      const texto = await respuesta.text();
 
-    if (respuesta.ok && texto === "Login exitoso") {
-      localStorage.setItem('token', 'FAKE-TOKEN');  // Simulado
-      document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-      window.location.href = '/selector.html';
-    } else {
-      document.getElementById('mensaje').textContent = texto || 'Error al iniciar sesión';
+      if (respuesta.ok) {
+        // Suponemos que el backend devuelve algo como: {"mensaje":"Login exitoso", "rol":"ADMIN"}
+        try {
+          const data = JSON.parse(texto);
+          if (data.mensaje === "Login exitoso") {
+            localStorage.setItem('token', 'FAKE-TOKEN');
+            localStorage.setItem('rol', data.rol || 'USUARIO');
+            document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+            window.location.href = '/selector.html';
+          } else {
+            document.getElementById('mensaje').textContent = data.mensaje || 'Respuesta inesperada';
+          }
+        } catch {
+          document.getElementById('mensaje').textContent = texto || 'Login fallido';
+        }
+      } else {
+        document.getElementById('mensaje').textContent = texto || 'Error al iniciar sesión';
+      }
+
+    } catch (error) {
+      document.getElementById('mensaje').textContent = 'Error de red: ' + error.message;
     }
   });
 </script>
+
 </body>
 </html>
