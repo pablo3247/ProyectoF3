@@ -25,8 +25,9 @@ public class SeguridadConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/index.html", "/selector.html","/gestionarContratos.html", "/nuevoContrato.html", "/verContratos.html", "/gestionarContratos.html",
-                                "/css/**", "/js/**", "/api/auth/login", "/api/usuarios/crear"
+                                "/", "/index.html", "/formulario.html", "/selector.html",
+                                "/nuevoContrato.html", "/firma.html", "/resumen.html", "/verContratos.html", "/panelRoot.html",
+                                "/css/**", "/js/**"
                         ).permitAll()
 
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
