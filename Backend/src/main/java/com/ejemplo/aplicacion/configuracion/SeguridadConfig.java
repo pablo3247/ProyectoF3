@@ -21,17 +21,19 @@ public class SeguridadConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults())  // 🔁 Usa la configuración ya definida en ConfiguracionCORS
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/index.html", "/formulario.html", "/selector.html",
-                                "/firma.html", "/resumen.html", "/verContratos.html", "/panelRoot.html",
-                                "/css/**", "/js/**",
+                                "/", "/index.html", "/selector.html", "/gestionarContratos.html",
+                                "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html",
+                                "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
                                 "/api/auth/login", "/api/usuarios/crear"
                         ).permitAll()
+
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
