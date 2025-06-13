@@ -21,22 +21,19 @@ public class SeguridadConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults())
+                .cors(withDefaults())  // 🔁 Usa la configuración ya definida en ConfiguracionCORS
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/index.html", "/formulario.html", "/selector.html",
-                                "/nuevoContrato.html", "/firma.html", "/resumen.html", "/verContratos.html", "/panelRoot.html",
-                                "/css/**", "/js/**"
+                                "/firma.html", "/resumen.html", "/verContratos.html", "/panelRoot.html",
+                                "/css/**", "/js/**",
+                                "/api/auth/login", "/api/usuarios/crear"
                         ).permitAll()
-
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
-
                         .anyRequest().authenticated()
                 )
-
-                // Añadimos el filtro JWT para validar token
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
