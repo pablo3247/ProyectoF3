@@ -100,9 +100,9 @@
       data.forEach(contrato => {
         const fila = document.createElement("tr");
 
-        // Mostrar enlace si URL existe, sino guion
+        // Mostrar botón si hay PDF
         const pdfLink = contrato.urlArchivoPdf
-          ? `<a href="${contrato.urlArchivoPdf}" target="_blank" rel="noopener noreferrer">Abrir PDF</a>`
+          ? `<button onclick="abrirContrato(${contrato.id})">Abrir PDF</button>`
           : "-";
 
         fila.innerHTML = `
@@ -118,6 +118,26 @@
     .catch(err => {
       console.error(err);
       alert("Error al cargar contratos");
+    });
+  }
+
+  function abrirContrato(id) {
+    fetch(`/api/contratos/${id}/url-pdf`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("No se pudo obtener la URL del PDF");
+      return res.text(); // cambiar a res.json() si devuelves { url: "..." }
+    })
+    .then(url => {
+      window.open(url, "_blank");
+    })
+    .catch(err => {
+      console.error("Error al abrir contrato:", err);
+      alert("❌ No se pudo abrir el PDF: " + err.message);
     });
   }
 
@@ -214,7 +234,6 @@
       mensaje.className = "mensaje exito";
       mensaje.innerText = "✅ " + (typeof data === "string" ? data : JSON.stringify(data, null, 2));
       cargarContratos();
-      // limpiar inputs
       archivoInput.value = "";
       document.getElementById("contratoId").value = "";
     })

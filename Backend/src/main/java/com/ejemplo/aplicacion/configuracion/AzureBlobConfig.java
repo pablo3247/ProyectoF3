@@ -16,7 +16,7 @@ public class AzureBlobConfig {
 
         StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
 
-        String endpoint = "http://127.0.0.1:10000/" + accountName;
+        String endpoint = "http://192.168.0.100:10000/" + accountName;
 
         String containerName = "contratos";
 
