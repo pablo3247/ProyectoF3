@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Lista de Contratos</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
@@ -10,34 +10,34 @@
       margin: 30px;
       background-color: #f9f9f9;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
     }
-
     th, td {
       border: 1px solid #ddd;
       padding: 10px;
       text-align: left;
     }
-
     th {
       background-color: #f2f2f2;
     }
-
     input, button {
       margin: 5px;
       padding: 8px;
     }
-
     .mensaje {
       margin-top: 10px;
       font-weight: bold;
+      white-space: pre-wrap;
+    }
+    .mensaje.exito {
       color: green;
     }
-
+    .mensaje.error {
+      color: red;
+    }
     .acciones button {
       margin-right: 5px;
     }
@@ -69,88 +69,169 @@
 <form id="formSubirContrato" enctype="multipart/form-data">
   <label for="archivo">Selecciona archivo PDF:</label>
   <input type="file" id="archivo" name="archivo" accept="application/pdf" required />
-  <input type="number" id="contratoId" name="contratoId" placeholder="ID Contrato" required />
+  <input type="number" id="contratoId" name="contratoId" placeholder="ID Contrato" required min="1" />
   <button type="submit">Subir Contrato</button>
 </form>
 
 <p id="mensajeSubida" class="mensaje"></p>
 
 <script>
+  const token = localStorage.getItem("token");
+
+  function getAuthHeaders(extra = {}) {
+    return {
+      ...extra,
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
   function cargarContratos() {
-    fetch("/api/contratos")
-      .then(res => {
-        if (!res.ok) throw new Error("No se pudo cargar contratos");
-        return res.json();
-      })
-      .then(data => {
-        if (!Array.isArray(data)) throw new Error("La respuesta no es un array");
-        const tbody = document.querySelector("#tablaContratos tbody");
-        tbody.innerHTML = "";
-        data.forEach(contrato => {
-          const fila = document.createElement("tr");
-          fila.innerHTML = `
-            <td>${contrato.id}</td>
-            <td>${contrato.nombre}</td>
-            <td>${contrato.archivoPDF || "-"}</td>
-            <td class="acciones">
-              <button onclick="eliminarContrato(${contrato.id})">🗑 Eliminar</button>
-            </td>`;
-          tbody.appendChild(fila);
-        });
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Error al cargar contratos");
+    fetch("/api/contratos", {
+      method: "GET",
+      headers: getAuthHeaders()
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("No se pudo cargar contratos");
+      return res.json();
+    })
+    .then(data => {
+      const tbody = document.querySelector("#tablaContratos tbody");
+      tbody.innerHTML = "";
+      data.forEach(contrato => {
+        const fila = document.createElement("tr");
+
+        // Mostrar enlace si URL existe, sino guion
+        const pdfLink = contrato.urlArchivoPdf
+          ? `<a href="${contrato.urlArchivoPdf}" target="_blank" rel="noopener noreferrer">Abrir PDF</a>`
+          : "-";
+
+        fila.innerHTML = `
+          <td>${contrato.id}</td>
+          <td>${contrato.nombre}</td>
+          <td>${pdfLink}</td>
+          <td class="acciones">
+            <button onclick="eliminarContrato(${contrato.id})">🗑 Eliminar</button>
+          </td>`;
+        tbody.appendChild(fila);
       });
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error al cargar contratos");
+    });
   }
 
   function crearContrato() {
-    const nombre = document.getElementById("nombre").value;
-    const archivoPDF = document.getElementById("archivoPDF").value;
+    const nombre = document.getElementById("nombre").value.trim();
+    const archivoPDF = document.getElementById("archivoPDF").value.trim();
+
+    if (!nombre) {
+      alert("El nombre es obligatorio");
+      return;
+    }
 
     fetch("/api/contratos", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nombre, archivoPDF })
+      headers: getAuthHeaders({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ nombre, urlArchivoPdf: archivoPDF || null })
     })
-    .then(res => res.text())
+    .then(res => {
+      if (!res.ok) throw new Error("Error al crear contrato");
+      return res.text();
+    })
     .then(() => {
       document.getElementById("nombre").value = "";
       document.getElementById("archivoPDF").value = "";
       cargarContratos();
     })
-    .catch(err => alert("Error al crear contrato"));
+    .catch(err => alert(err.message));
   }
 
   function eliminarContrato(id) {
-    fetch(`/api/contratos/${id}`, { method: "DELETE" })
-      .then(() => cargarContratos())
-      .catch(err => alert("Error al eliminar contrato"));
+    if (!confirm("¿Seguro que quieres eliminar este contrato?")) return;
+
+    fetch(`/api/contratos/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders()
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Error al eliminar contrato");
+      cargarContratos();
+    })
+    .catch(err => alert(err.message));
   }
 
   document.getElementById("formSubirContrato").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const id = document.getElementById("contratoId").value;
-    const archivo = document.getElementById("archivo").files[0];
+    const archivoInput = document.getElementById("archivo");
+    if (!archivoInput.files.length) {
+      alert("Por favor selecciona un archivo PDF.");
+      return;
+    }
+
+    const archivo = archivoInput.files[0];
+
+    if (archivo.type !== "application/pdf") {
+      alert("Solo se permiten archivos PDF.");
+      return;
+    }
+
+    if (!id || id <= 0) {
+      alert("Por favor ingresa un ID de contrato válido.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", archivo);
 
-    fetch("/api/contratos/" + id + "/subir-pdf", {
+    fetch(`/api/contratos/${id}/subir-pdf`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}` // NO incluir Content-Type para que fetch lo maneje
+      },
       body: formData
     })
-    .then(response => response.text())
+    .then(async response => {
+      const contentType = response.headers.get("content-type") || "";
+      let responseBody;
+
+      if (contentType.includes("application/json")) {
+        responseBody = await response.json();
+      } else {
+        responseBody = await response.text();
+      }
+
+      if (!response.ok) {
+        throw new Error(typeof responseBody === "string" ? responseBody : JSON.stringify(responseBody));
+      }
+
+      return responseBody;
+    })
     .then(data => {
-      document.getElementById("mensajeSubida").innerText = data;
+      const mensaje = document.getElementById("mensajeSubida");
+      mensaje.className = "mensaje exito";
+      mensaje.innerText = "✅ " + (typeof data === "string" ? data : JSON.stringify(data, null, 2));
       cargarContratos();
+      // limpiar inputs
+      archivoInput.value = "";
+      document.getElementById("contratoId").value = "";
     })
     .catch(error => {
-      document.getElementById("mensajeSubida").innerText = "❌ Error al subir contrato";
+      console.error("Error en fetch subir-pdf:", error);
+      const mensaje = document.getElementById("mensajeSubida");
+      mensaje.className = "mensaje error";
+      mensaje.innerText = "❌ " + error.message;
     });
   });
 
-  window.onload = cargarContratos;
+  if (!token) {
+    alert("Debes iniciar sesión");
+    window.location.href = "/login.html";
+  } else {
+    window.onload = cargarContratos;
+  }
 </script>
 </body>
 </html>

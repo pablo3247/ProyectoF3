@@ -1,107 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Firma del Contrato</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <title>Firma del contrato</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #f4f4f4;
+    canvas {
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      display: block;
+      margin: auto;
+      background-color: white;
     }
 
-    canvas {
-      border: 2px solid #000;
-      border-radius: 8px;
+    .botones {
+      text-align: center;
       margin-top: 20px;
     }
 
     button {
-      margin: 10px;
       padding: 10px 20px;
-      background-color: #2b6cb0;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #1a4e85;
+      margin: 0 10px;
     }
   </style>
 </head>
 <body>
+<h2 style="text-align: center;">Firma del contrato</h2>
 
-<h2>Firma el contrato con tu dedo</h2>
+<canvas id="canvas" width="600" height="200"></canvas>
 
-<canvas id="canvasFirma" width="500" height="200"></canvas><br>
-
-<button onclick="limpiarCanvas()">🧹 Limpiar</button>
-<button onclick="guardarYContinuar()">✅ Guardar y continuar</button>
+<div class="botones">
+  <button onclick="borrarFirma()">Borrar</button>
+  <button onclick="guardarFirma()">Guardar Firma</button>
+</div>
 
 <script>
-  const canvas = document.getElementById('canvasFirma');
+  // Verifica autenticación
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('No estás autenticado, redirigiendo a login...');
+    window.location.href = 'index.html';
+  }
+
+  const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  let pintando = false;
+  let dibujando = false;
 
-  canvas.addEventListener('mousedown', e => {
-    pintando = true;
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-  });
+  canvas.addEventListener('mousedown', () => dibujando = true);
+  canvas.addEventListener('mouseup', () => dibujando = false);
+  canvas.addEventListener('mousemove', dibujar);
 
-  canvas.addEventListener('mousemove', e => {
-    if (pintando) {
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.stroke();
-    }
-  });
+  function dibujar(evento) {
+    if (!dibujando) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
 
-  canvas.addEventListener('mouseup', () => {
-    pintando = false;
-  });
-
-  canvas.addEventListener('mouseleave', () => {
-    pintando = false;
-  });
-
-  // Touch para móviles
-  canvas.addEventListener('touchstart', e => {
-    const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
-    ctx.beginPath();
-    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-    e.preventDefault();
-  });
-
-  canvas.addEventListener('touchmove', e => {
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.lineTo(evento.clientX - rect.left, evento.clientY - rect.top);
     ctx.stroke();
-    e.preventDefault();
-  });
+    ctx.beginPath();
+    ctx.moveTo(evento.clientX - rect.left, evento.clientY - rect.top);
+  }
 
-  function limpiarCanvas() {
+  function borrarFirma() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function guardarYContinuar() {
-    const datos = sessionStorage.getItem("datosContrato");
-    if (!datos) {
-      alert("No se encontraron datos del contrato.");
-      return;
-    }
-
-    const firmaImagen = canvas.toDataURL("image/png");
-    sessionStorage.setItem("firmaImagen", firmaImagen);
-
+  function guardarFirma() {
+    const firmaData = canvas.toDataURL("image/png");
+    sessionStorage.setItem("firmaImagen", firmaData);
+    alert("Firma guardada correctamente.");
     window.location.href = "resumen.html";
   }
 </script>
-
 </body>
 </html>

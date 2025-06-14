@@ -31,11 +31,16 @@ public class SeguridadConfig {
                                 "/api/auth/login", "/api/usuarios/crear"
                         ).permitAll()
 
+                        // El endpoint subir-pdf debe requerir rol ADMIN o USER
+                        .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")
+
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
+
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

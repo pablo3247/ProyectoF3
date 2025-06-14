@@ -3,7 +3,7 @@ package com.ejemplo.aplicacion.modelo;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "contrato")
+@Table(name = "contratos")
 public class Contrato {
 
     @Id
@@ -12,9 +12,8 @@ public class Contrato {
 
     private String nombre;
 
-    @Lob
-    @Column(name = "archivo_pdf")
-    private byte[] archivoPdf;
+    @Column(name = "url_archivo_pdf", length = 512)
+    private String urlArchivoPdf;
 
     public Long getId() {
         return id;
@@ -32,12 +31,11 @@ public class Contrato {
         this.nombre = nombre;
     }
 
-    public byte[] getArchivoPdf() {
-        return archivoPdf;
+    public String getUrlArchivoPdf() {
+        return urlArchivoPdf;
     }
 
-    public void setArchivoPdf(byte[] archivoPdf) {
-        this.archivoPdf = archivoPdf;
+    public void setUrlArchivoPdf(String urlArchivoPdf) {
+        this.urlArchivoPdf = urlArchivoPdf;
     }
 }
-
