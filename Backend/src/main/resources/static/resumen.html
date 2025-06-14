@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Resumen del Contrato</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
   <style>
     body {
       font-family: Georgia, serif;
@@ -84,7 +84,7 @@
 
   <div class="seccion firma">
     <h2>Firma del Usuario</h2>
-    <img id="firmaImagen" src="" alt="Firma del usuario">
+    <img id="firmaImagen" src="" alt="Firma del usuario" />
   </div>
 
   <button class="boton-volver" onclick="window.location.href='selector.html'">Volver al menú</button>
@@ -99,37 +99,42 @@
       return;
     }
 
+    const getAuthHeaders = (extra = {}) => ({
+      ...extra,
+      Authorization: `Bearer ${token}`,
+    });
+
     try {
       const res = await fetch("/api/usuarios/actual", {
         method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        headers: getAuthHeaders(),
       });
 
       if (!res.ok) throw new Error("No autorizado");
 
       const datos = await res.json();
 
-      document.getElementById("nombre").textContent = datos.nombre;
-      document.getElementById("dni").textContent = datos.dni;
-      document.getElementById("email").textContent = datos.email;
-      document.getElementById("telefono").textContent = datos.telefono;
+      document.getElementById("nombre").textContent = datos.nombre || "-";
+      document.getElementById("dni").textContent = datos.dni || "-";
+      document.getElementById("email").textContent = datos.email || "-";
+      document.getElementById("telefono").textContent = datos.telefono || "-";
       document.getElementById("certificado").textContent = datos.certificado ? "Sí" : "No";
-      document.getElementById("rol").textContent = datos.rol;
+      document.getElementById("rol").textContent = datos.rol || "-";
     } catch (error) {
       console.error("Error al cargar datos:", error);
       alert("Error al cargar los datos del usuario.");
     }
 
     const firmaImagen = sessionStorage.getItem("firmaImagen");
+    const imgFirma = document.getElementById("firmaImagen");
     if (firmaImagen) {
-      document.getElementById("firmaImagen").src = firmaImagen;
+      imgFirma.src = firmaImagen;
+      imgFirma.alt = "Firma del usuario";
     } else {
-      document.getElementById("firmaImagen").alt = "No se ha registrado firma.";
+      imgFirma.removeAttribute("src");
+      imgFirma.alt = "No se ha registrado firma.";
     }
   });
 </script>
 </body>
 </html>
-
