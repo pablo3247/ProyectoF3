@@ -26,7 +26,7 @@ public class SeguridadConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
-                                "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html",
+                                "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
                                 "/api/auth/login", "/api/usuarios/crear"
                         ).permitAll()
