@@ -10,11 +10,19 @@ public class Contrato {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
+    private String nombre; // título del contrato
+
+    private String dni; // DNI del usuario asociado
+
+    private String email; // Email del usuario
+
+    private String estado; // pendiente | firmado
 
     @Lob
     @Column(name = "archivo_pdf")
     private byte[] archivoPdf;
+
+    // Getters y setters
 
     public Long getId() {
         return id;
@@ -32,6 +40,30 @@ public class Contrato {
         this.nombre = nombre;
     }
 
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     public byte[] getArchivoPdf() {
         return archivoPdf;
     }
@@ -40,4 +72,3 @@ public class Contrato {
         this.archivoPdf = archivoPdf;
     }
 }
-

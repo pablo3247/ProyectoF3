@@ -7,6 +7,7 @@ import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,29 +49,28 @@ public class ContratoControlador {
     }
 
     @PostMapping("/asignar")
-    public ResponseEntity<String> asignarContratoAUsuario(@RequestBody Map<String, String> datos) {
+    public ResponseEntity<String> asignarContrato(@RequestBody Map<String, String> datos) {
         String dni = datos.get("dni");
         String titulo = datos.get("titulo");
         String contenido = datos.get("contenido");
 
-        Optional<com.ejemplo.aplicacion.modelo.Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
+        Optional<Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
         if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("❌ Usuario no encontrado con DNI: " + dni);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
         }
 
-        com.ejemplo.aplicacion.modelo.Usuario usuario = usuarioOpt.get();
-
+        Usuario usuario = usuarioOpt.get();
         Contrato contrato = new Contrato();
-        contrato.setTitulo(titulo);
-        contrato.setContenido(contenido);
-        contrato.setUsuario(usuario);
+        contrato.setNombre(titulo);
+        contrato.setDni(usuario.getDni());
+        contrato.setEmail(usuario.getEmail());
         contrato.setEstado("pendiente");
 
         contratoRepositorio.save(contrato);
 
-        return ResponseEntity.ok("✅ Contrato asignado correctamente al usuario con DNI: " + dni);
+        return ResponseEntity.ok("Contrato asignado correctamente");
     }
+
 
 
     @GetMapping("/{id}/descargar-pdf")
