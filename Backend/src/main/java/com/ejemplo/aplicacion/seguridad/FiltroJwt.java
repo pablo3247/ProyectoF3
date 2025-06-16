@@ -26,9 +26,9 @@ public class FiltroJwt extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        // Excluir rutas públicas del filtro, como /api/auth/login
         String ruta = request.getServletPath();
-        if (ruta.equals("/api/auth/login")) {
+
+        if (esRutaPublica(ruta)) {
             chain.doFilter(request, response);
             return;
         }
@@ -38,28 +38,71 @@ public class FiltroJwt extends OncePerRequestFilter {
         if (cabecera != null && cabecera.startsWith("Bearer ")) {
             String token = cabecera.substring(7);
 
-            if (servicioJwt.validarToken(token)) {
-                String identificador = servicioJwt.extraerIdentificador(token);
-                String rol ="ROLE_" + servicioJwt.extraerRol(token);
+            try {
+                if (servicioJwt.validarToken(token)) {
+                    String identificador = servicioJwt.extraerIdentificador(token);
+                    String rolExtraido = servicioJwt.extraerRol(token);
 
-                User usuarioSpring = new User(
-                        identificador,
-                        "", // No se necesita contraseña en este contexto
-                        Collections.singleton(() -> rol)
-                );
+                    if (rolExtraido == null || rolExtraido.isEmpty()) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().write("Rol no encontrado en token");
+                        response.getWriter().flush();
+                        return;
+                    }
 
-                UsernamePasswordAuthenticationToken autenticacion =
-                        new UsernamePasswordAuthenticationToken(
-                                usuarioSpring, null, usuarioSpring.getAuthorities()
-                        );
+                    String rol = "ROLE_" + rolExtraido.toUpperCase();
 
-                autenticacion.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    User usuarioSpring = new User(
+                            identificador,
+                            "",
+                            Collections.singleton(() -> rol)
+                    );
 
-                SecurityContextHolder.getContext().setAuthentication(autenticacion);
+                    UsernamePasswordAuthenticationToken autenticacion =
+                            new UsernamePasswordAuthenticationToken(
+                                    usuarioSpring, null, usuarioSpring.getAuthorities()
+                            );
+
+                    autenticacion.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(autenticacion);
+                    chain.doFilter(request, response);
+                    return;
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token inválido");
+                    response.getWriter().flush();
+                    return;
+                }
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Error al procesar el token: " + e.getMessage());
+                response.getWriter().flush();
+                return;
             }
-        }
 
-        // Continuar con el siguiente filtro de la cadena
-        chain.doFilter(request, response);
+        } else {
+            // No hay token -> bloquea acceso
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("No se encontró token de autorización");
+            response.getWriter().flush();
+        }
+    }
+
+    private boolean esRutaPublica(String ruta) {
+        return ruta.equals("/") ||
+                ruta.equals("/index.html") ||
+                ruta.equals("/selector.html") ||
+                ruta.equals("/gestionarContratos.html") ||
+                ruta.equals("/nuevoContrato.html") ||
+                ruta.equals("/verContratos.html") ||
+                ruta.equals("/resumen.html") ||
+                ruta.equals("/firma.html") ||
+                ruta.startsWith("/css/") ||
+                ruta.startsWith("/js/") ||
+                ruta.startsWith("/imagenes/") ||
+                ruta.startsWith("/fonts/") ||
+                ruta.equals("/favicon.ico") ||
+                ruta.startsWith("/api/auth/login") ||
+                ruta.startsWith("/api/usuarios/crear");
     }
 }

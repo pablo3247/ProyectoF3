@@ -26,34 +26,39 @@
 
 <script>
   document.getElementById('loginForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+   e.preventDefault();
 
-    const datos = {
-      email: document.getElementById('email').value,
-      contrasena: document.getElementById('contrasena').value
-    };
+   const datos = {
+     email: document.getElementById('email').value,
+     contrasena: document.getElementById('contrasena').value
+   };
 
-    try {
-      const respuesta = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      });
+   try {
+     const respuesta = await fetch('/api/auth/login', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(datos)
+     });
 
-      const data = await respuesta.json();
+     const data = await respuesta.json();
 
-      if (respuesta.ok && data.mensaje === "Login exitoso") {
-        localStorage.setItem('token', data.token || 'FAKE-TOKEN');
-        localStorage.setItem('rol', data.rol);
-        document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-        window.location.href = '/selector.html';
-      } else {
-        document.getElementById('mensaje').textContent = data.mensaje || 'Error al iniciar sesión';
-      }
-    } catch (error) {
-      document.getElementById('mensaje').textContent = 'Error de conexión al iniciar sesión';
-    }
-  });
+     if (respuesta.ok && data.mensaje === "Login exitoso") {
+       if (data.token) {
+         localStorage.setItem('token', data.token);
+         localStorage.setItem('rol', data.rol);
+         document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+         window.location.href = '/selector.html';
+       } else {
+         document.getElementById('mensaje').textContent = 'Token no recibido, login fallido';
+       }
+     } else {
+       document.getElementById('mensaje').textContent = data.mensaje || 'Error al iniciar sesión';
+     }
+   } catch (error) {
+     document.getElementById('mensaje').textContent = 'Error de conexión al iniciar sesión';
+   }
+ });
+
 </script>
 
 
