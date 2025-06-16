@@ -1,8 +1,9 @@
 package com.ejemplo.aplicacion.controlador;
 
 import com.ejemplo.aplicacion.modelo.Contrato;
+import com.ejemplo.aplicacion.modelo.Usuario;
 import com.ejemplo.aplicacion.repositorio.RepositorioContrato;
-import com.ejemplo.aplicacion.repositorio.RepositorioContrato;
+import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -25,6 +26,10 @@ public class ContratoControlador {
     @Autowired
     private RepositorioContrato contratoRepositorio;
 
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
+
+
     @PostMapping("/{id}/subir-pdf")
     public ResponseEntity<String> subirPdfEnBlob(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
@@ -42,6 +47,32 @@ public class ContratoControlador {
         }
     }
 
+    @PostMapping("/asignar")
+    public ResponseEntity<String> asignarContratoAUsuario(@RequestBody Map<String, String> datos) {
+        String dni = datos.get("dni");
+        String titulo = datos.get("titulo");
+        String contenido = datos.get("contenido");
+
+        Optional<com.ejemplo.aplicacion.modelo.Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("❌ Usuario no encontrado con DNI: " + dni);
+        }
+
+        com.ejemplo.aplicacion.modelo.Usuario usuario = usuarioOpt.get();
+
+        Contrato contrato = new Contrato();
+        contrato.setTitulo(titulo);
+        contrato.setContenido(contenido);
+        contrato.setUsuario(usuario);
+        contrato.setEstado("pendiente");
+
+        contratoRepositorio.save(contrato);
+
+        return ResponseEntity.ok("✅ Contrato asignado correctamente al usuario con DNI: " + dni);
+    }
+
+
     @GetMapping("/{id}/descargar-pdf")
     public ResponseEntity<byte[]> descargarPdf(@PathVariable Long id) {
         Optional<Contrato> opt = contratoRepositorio.findById(id);
@@ -54,4 +85,6 @@ public class ContratoControlador {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(opt.get().getArchivoPdf());
     }
+
+
 }

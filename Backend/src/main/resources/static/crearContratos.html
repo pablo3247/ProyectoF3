@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crear Contrato</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="container">
+  <h1>Crear nuevo contrato</h1>
+
+  <form id="formContrato">
+    <label for="usuario">Selecciona usuario (DNI):</label>
+    <select id="usuario" name="usuario" required>
+      <option value="">-- Selecciona --</option>
+    </select>
+
+    <label for="titulo">Nombre del contrato:</label>
+    <input type="text" id="titulo" name="titulo" required />
+
+    <label for="pdf">Selecciona archivo PDF:</label>
+    <input type="file" id="pdf" name="pdf" accept="application/pdf" required />
+
+    <button type="submit">Crear contrato</button>
+  </form>
+
+  <p id="mensaje"></p>
+</div>
+
+<script>
+  // Cargar usuarios disponibles (solo con rol USER)
+  async function cargarUsuarios() {
+    const res = await fetch("/api/usuarios/solo-usuarios");
+    const usuarios = await res.json();
+
+    const select = document.getElementById("usuario");
+    usuarios.forEach(u => {
+      const option = document.createElement("option");
+      option.value = u.dni;
+      option.textContent = `${u.nombre} (${u.dni})`;
+      select.appendChild(option);
+    });
+  }
+
+  document.getElementById("formContrato").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const dni = document.getElementById("usuario").value;
+    const titulo = document.getElementById("titulo").value;
+    const file = document.getElementById("pdf").files[0];
+
+    if (!dni || !titulo || !file) {
+      return alert("Rellena todos los campos.");
+    }
+
+    // Paso 1: Crear el contrato
+    const crearRes = await fetch("/api/contratos/asignar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dni, titulo, contenido: "Contrato generado por admin" })
+    });
+
+    const crearTexto = await crearRes.text();
+    document.getElementById("mensaje").textContent = crearTexto;
+
+    if (!crearRes.ok) return;
+
+    // Paso 2: Buscar el ID del contrato recién creado (opcionalmente podrías devolverlo desde el backend)
+    const contratosRes = await fetch("/api/contratos/usuario/" + dni);
+    const contratos = await contratosRes.json();
+    const ultimo = contratos.at(-1); // último contrato del usuario
+
+    if (!ultimo || !ultimo.id) {
+      alert("Contrato creado, pero no se encontró el ID para subir el PDF.");
+      return;
+    }
+
+    // Paso 3: Subir el PDF
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const subirRes = await fetch(`/api/contratos/${ultimo.id}/subir-pdf`, {
+      method: "POST",
+      body: formData
+    });
+
+    const subirTexto = await subirRes.text();
+    document.getElementById("mensaje").textContent += "\n" + subirTexto;
+  });
+
+  cargarUsuarios();
+</script>
+</body>
+</html>

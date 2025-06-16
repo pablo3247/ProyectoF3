@@ -28,5 +28,12 @@ public class ControladorUsuario {
         return repositorioUsuario.findAll();
     }
 
+    @GetMapping("/solo-usuarios")
+    public List<Usuario> obtenerUsuariosNormales() {
+        return repositorioUsuario.findAll().stream()
+                .filter(u -> "USER".equalsIgnoreCase(u.getRol()))
+                .toList();
+    }
+
 
 }

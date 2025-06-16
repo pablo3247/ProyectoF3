@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Resumen del Contrato</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      font-family: Georgia, serif;
+      margin: 40px;
+      background-color: #f8f8f8;
+      color: #222;
+    }
+
+    .contrato {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .seccion {
+      margin-bottom: 30px;
+    }
+
+    .seccion h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    .dato {
+      margin: 10px 0;
+    }
+
+    .firma {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .firma img {
+      max-width: 300px;
+      height: auto;
+      border: 1px solid #ccc;
+    }
+
+    .boton-volver {
+      display: block;
+      margin: 40px auto 0;
+      padding: 10px 30px;
+      font-size: 16px;
+      border: none;
+      background-color: #005faa;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .boton-volver:hover {
+      background-color: #004080;
+    }
+  </style>
+</head>
+<body>
+<div class="contrato">
+  <h1>Resumen del Contrato</h1>
+
+  <div class="seccion">
+    <h2>Datos del Usuario</h2>
+    <p class="dato"><strong>Nombre:</strong> <span id="nombre">Cargando...</span></p>
+    <p class="dato"><strong>DNI:</strong> <span id="dni">Cargando...</span></p>
+    <p class="dato"><strong>Email:</strong> <span id="email">Cargando...</span></p>
+    <p class="dato"><strong>Teléfono:</strong> <span id="telefono">Cargando...</span></p>
+    <p class="dato"><strong>Certificado:</strong> <span id="certificado">Cargando...</span></p>
+    <p class="dato"><strong>Rol:</strong> <span id="rol">Cargando...</span></p>
+  </div>
+
+  <div class="seccion firma">
+    <h2>Firma del Usuario</h2>
+    <img id="firmaImagen" src="" alt="Firma del usuario">
+  </div>
+
+  <button class="boton-volver" onclick="window.location.href='selector.html'">Volver al menú</button>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Debes iniciar sesión primero.");
+      window.location.href = "/index.html";
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/usuarios/actual", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) throw new Error("No autorizado");
+
+      const datos = await res.json();
+
+      document.getElementById("nombre").textContent = datos.nombre;
+      document.getElementById("dni").textContent = datos.dni;
+      document.getElementById("email").textContent = datos.email;
+      document.getElementById("telefono").textContent = datos.telefono;
+      document.getElementById("certificado").textContent = datos.certificado ? "Sí" : "No";
+      document.getElementById("rol").textContent = datos.rol;
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+      alert("Error al cargar los datos del usuario.");
+    }
+
+    const firmaImagen = sessionStorage.getItem("firmaImagen");
+    if (firmaImagen) {
+      document.getElementById("firmaImagen").src = firmaImagen;
+    } else {
+      document.getElementById("firmaImagen").alt = "No se ha registrado firma.";
+    }
+  });
+</script>
+</body>
+</html>
+
