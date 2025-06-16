@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="16/06">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/crearContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/crearContratos.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/test.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/crearContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/crearContratos.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,14 +114,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747994453859</updated>
-    </task>
-    <task id="LOCAL-00005" summary="26/05">
-      <option name="closed" value="true" />
-      <created>1748248547199</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1748248547199</updated>
     </task>
     <task id="LOCAL-00006" summary="30/05">
       <option name="closed" value="true" />
@@ -505,7 +499,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750068407991</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="16/06">
+      <option name="closed" value="true" />
+      <created>1750082736223</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1750082736223</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

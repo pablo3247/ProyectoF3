@@ -28,18 +28,16 @@ public class SeguridadConfig {
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
                                 "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear"
+                                "/api/auth/login", "/api/usuarios/crear", "/api/contratos/**"
                         ).permitAll()
 
-                        // El endpoint subir-pdf debe requerir rol ADMIN o USER
+                        // Estas rutas requieren autenticación específica
                         .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")
-
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
-
-                        .requestMatchers("/api/contratos/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
+
 
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 

@@ -24,7 +24,6 @@
 <p id="mensajeContrato"></p>
 
 <script>
-
   const token = localStorage.getItem("token");
   if (!token) {
     alert("No estás autenticado. Redirigiendo...");
@@ -64,7 +63,7 @@
     }
 
     try {
-      // Paso 1: Crear contrato y asignarlo al usuario
+      // Paso 1: Crear contrato
       const crearRes = await fetch("/api/contratos/asignar", {
         method: "POST",
         headers: {
@@ -81,14 +80,19 @@
       if (!crearRes.ok) throw new Error("Error al crear contrato");
       const creado = await crearRes.text();
 
-      // Paso 2: Obtener todos los contratos del usuario para encontrar el último
+      // Paso 2: Obtener contratos
       const contratosRes = await fetch("/api/contratos", { headers });
-      const contratos = await contratosRes.text();
-      const contrato = contratos.reverse().find(c => c.nombre === nombre);
+      const contratosJson = await contratosRes.json();
+
+      if (!Array.isArray(contratosJson)) {
+        throw new Error("La respuesta de contratos no es un array");
+      }
+
+      const contrato = contratosJson.reverse().find(c => c.nombre === nombre);
 
       if (!contrato || !contrato.id) throw new Error("Contrato creado no encontrado");
 
-      // Paso 3: Subir el PDF
+      // Paso 3: Subir PDF
       const formData = new FormData();
       formData.append("file", archivo);
 
@@ -102,6 +106,7 @@
 
       document.getElementById("mensajeContrato").textContent = creado + " | " + subirMensaje;
       document.getElementById("formCrearContrato").reset();
+
     } catch (error) {
       console.error(error);
       document.getElementById("mensajeContrato").textContent = "❌ Error: " + error.message;
