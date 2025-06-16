@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="16/06" />
+    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="16/06">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/crearContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/crearContratos.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -106,14 +109,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747994453859</updated>
-    </task>
-    <task id="LOCAL-00002" summary="23/05">
-      <option name="closed" value="true" />
-      <created>1747998008207</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1747998008207</updated>
     </task>
     <task id="LOCAL-00003" summary="23/05">
       <option name="closed" value="true" />
@@ -499,7 +494,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750067258892</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="16/06">
+      <option name="closed" value="true" />
+      <created>1750067588466</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1750067588466</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
