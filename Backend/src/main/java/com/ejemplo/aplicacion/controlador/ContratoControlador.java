@@ -71,6 +71,14 @@ public class ContratoControlador {
         return ResponseEntity.ok("Contrato asignado correctamente");
     }
 
+    @PostMapping("/crear")
+    public ResponseEntity<Map<String, Object>> crearContrato(@RequestBody Contrato contrato) {
+        Contrato guardado = contratoRepositorio.save(contrato);
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("id", guardado.getId());
+        return ResponseEntity.ok(respuesta);
+    }
+
 
 
     @GetMapping("/{id}/descargar-pdf")

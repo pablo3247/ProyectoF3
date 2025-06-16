@@ -8,100 +8,108 @@
 <body>
 <h1>Crear Contrato</h1>
 
-<form id="formularioContrato">
-  <label for="dniUsuario">Selecciona un usuario por DNI:</label><br>
-  <select id="dniUsuario" name="dni" required>
-    <option value="">-- Selecciona un DNI --</option>
-  </select><br><br>
+<form id="formCrearContrato">
+  <label for="dniUsuario">Selecciona Usuario (DNI):</label>
+  <select id="dniUsuario" required></select><br><br>
 
-  <label for="nombreContrato">Nombre del contrato:</label><br>
-  <input type="text" id="nombreContrato" name="nombre" required><br><br>
+  <label for="nombreContrato">Nombre del contrato:</label>
+  <input type="text" id="nombreContrato" required><br><br>
 
-  <label for="archivoPdf">Archivo PDF del contrato:</label><br>
-  <input type="file" id="archivoPdf" name="archivoPdf" accept="application/pdf" required><br><br>
+  <label for="archivoContrato">Archivo PDF:</label>
+  <input type="file" id="archivoContrato" accept="application/pdf" required><br><br>
 
   <button type="submit">Crear Contrato</button>
 </form>
 
-<p id="mensaje"></p>
+<p id="mensajeContrato"></p>
 
 <script>
-  const token = localStorage.getItem('token');
+
+  const token = localStorage.getItem("token");
   if (!token) {
-    alert('No estás autenticado. Redirigiendo a login...');
-    window.location.href = 'index.html';
+    alert("No estás autenticado. Redirigiendo...");
+    window.location.href = "/index.html";
   }
 
-  // 1. Cargar usuarios para el select
-  fetch('/api/usuarios', {
-    headers: {
-      'Authorization': 'Bearer ' + token
-    }
-  })
-  .then(response => response.json())
-  .then(usuarios => {
-    const select = document.getElementById('dniUsuario');
-    usuarios.forEach(u => {
-      const option = document.createElement('option');
-      option.value = u.dni;
-      option.textContent = `${u.nombre} (${u.dni})`;
-      select.appendChild(option);
-    });
-  })
-  .catch(error => {
-    console.error('❌ Error cargando usuarios:', error);
-  });
+  const headers = { Authorization: "Bearer " + token };
 
-  // 2. Manejar envío del formulario
-  document.getElementById('formularioContrato').addEventListener('submit', async function(e) {
+  function cargarUsuarios() {
+    fetch("/api/usuarios", { headers })
+      .then(res => res.json())
+      .then(usuarios => {
+        const select = document.getElementById("dniUsuario");
+        usuarios.forEach(u => {
+          const option = document.createElement("option");
+          option.value = u.dni;
+          option.textContent = `${u.nombre} (${u.dni})`;
+          select.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error("Error al cargar usuarios:", err);
+        alert("Error al cargar usuarios");
+      });
+  }
+
+  document.getElementById("formCrearContrato").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const dni = document.getElementById('dniUsuario').value;
-    const nombre = document.getElementById('nombreContrato').value;
-    const archivo = document.getElementById('archivoPdf').files[0];
+    const dni = document.getElementById("dniUsuario").value;
+    const nombre = document.getElementById("nombreContrato").value.trim();
+    const archivo = document.getElementById("archivoContrato").files[0];
 
-    if (!archivo) {
-      document.getElementById('mensaje').textContent = '❌ Debes seleccionar un archivo PDF.';
+    if (!dni || !nombre || !archivo) {
+      alert("Todos los campos son obligatorios.");
       return;
     }
 
-    // Paso 1: asignar contrato en texto
-    const respuestaAsignar = await fetch('/api/contratos/asignar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({ dni: dni, titulo: nombre, contenido: '' })
-    });
+    try {
+      // Paso 1: Crear contrato y asignarlo al usuario
+      const crearRes = await fetch("/api/contratos/asignar", {
+        method: "POST",
+        headers: {
+          ...headers,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          dni,
+          titulo: nombre,
+          contenido: "Contrato asignado por admin"
+        })
+      });
 
-    if (!respuestaAsignar.ok) {
-      document.getElementById('mensaje').textContent = '❌ Error al asignar contrato.';
-      return;
-    }
+      if (!crearRes.ok) throw new Error("Error al crear contrato");
+      const creado = await crearRes.text();
 
-    const texto = await respuestaAsignar.text();
-    const idContrato = texto.match(/contrato con DNI.*?(\d+)/i)?.[1]; // opcional si API lo permite
+      // Paso 2: Obtener todos los contratos del usuario para encontrar el último
+      const contratosRes = await fetch("/api/contratos", { headers });
+      const contratos = await contratosRes.text();
+      const contrato = contratos.reverse().find(c => c.nombre === nombre);
 
-    // Paso 2: subir archivo PDF
-    const subir = await fetch(`/api/contratos/${idContrato}/subir-pdf`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      },
-      body: (() => {
-        const form = new FormData();
-        form.append('file', archivo);
-        return form;
-      })()
-    });
+      if (!contrato || !contrato.id) throw new Error("Contrato creado no encontrado");
 
-    if (subir.ok) {
-      document.getElementById('mensaje').textContent = '✅ Contrato creado correctamente.';
-    } else {
-      document.getElementById('mensaje').textContent = '❌ Error al subir el PDF.';
+      // Paso 3: Subir el PDF
+      const formData = new FormData();
+      formData.append("file", archivo);
+
+      const subirRes = await fetch(`/api/contratos/${contrato.id}/subir-pdf`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+
+      const subirMensaje = await subirRes.text();
+
+      document.getElementById("mensajeContrato").textContent = creado + " | " + subirMensaje;
+      document.getElementById("formCrearContrato").reset();
+    } catch (error) {
+      console.error(error);
+      document.getElementById("mensajeContrato").textContent = "❌ Error: " + error.message;
     }
   });
+
+  cargarUsuarios();
 </script>
 </body>
 </html>
+
