@@ -7,7 +7,9 @@ import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -19,6 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +63,55 @@ public class ContratoControlador {
         documento.save(out);
         documento.close();
         return out.toByteArray();
+    }
+
+    @PostMapping("/{id}/firmar")
+    public ResponseEntity<String> firmarContrato(@PathVariable Long id, @RequestBody Map<String, String> datos) {
+        try {
+            Optional<Contrato> opt = contratoRepositorio.findById(id);
+            if (opt.isEmpty() || opt.get().getArchivoPdf() == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado o sin PDF");
+            }
+
+            String firmaBase64 = datos.get("firma");
+            if (firmaBase64 == null || !firmaBase64.contains(",")) {
+                return ResponseEntity.badRequest().body("Firma no válida");
+            }
+
+            byte[] pdfBytes = opt.get().getArchivoPdf();
+            byte[] firmaBytes = Base64.getDecoder().decode(firmaBase64.split(",")[1]);
+
+            BufferedImage firmaImage = ImageIO.read(new ByteArrayInputStream(firmaBytes));
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            try (PDDocument doc = PDDocument.load(pdfBytes)) {
+                PDPage pagina = doc.getPage(0); // en la primera página
+                PDImageXObject firma = PDImageXObject.createFromByteArray(doc, firmaBytes, "firma");
+                PDPageContentStream contenido = new PDPageContentStream(doc, pagina, PDPageContentStream.AppendMode.APPEND, true);
+
+                // Posicionar firma (ajusta si necesitas)
+                PDRectangle mediaBox = pagina.getMediaBox();
+                float x = 100;
+                float y = 100;
+
+                contenido.drawImage(firma, x, y, 150, 50);
+                contenido.close();
+
+                doc.save(out);
+            }
+
+            Contrato contrato = opt.get();
+            contrato.setArchivoPdf(out.toByteArray());
+            contrato.setEstado("firmado");
+            contratoRepositorio.save(contrato);
+
+            return ResponseEntity.ok("✅ Contrato firmado correctamente");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("❌ Error al firmar el contrato: " + e.getMessage());
+        }
     }
 
     @PostMapping("/{id}/subir-pdf")
