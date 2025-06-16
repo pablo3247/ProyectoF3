@@ -97,6 +97,7 @@ public class FiltroJwt extends OncePerRequestFilter {
                 ruta.equals("/verContratos.html") ||
                 ruta.equals("/resumen.html") ||
                 ruta.equals("/firma.html") ||
+                ruta.equals("/crearContratos.html") ||
                 ruta.startsWith("/css/") ||
                 ruta.startsWith("/js/") ||
                 ruta.startsWith("/imagenes/") ||
