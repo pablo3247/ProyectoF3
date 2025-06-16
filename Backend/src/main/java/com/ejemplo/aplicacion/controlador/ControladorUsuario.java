@@ -35,5 +35,9 @@ public class ControladorUsuario {
                 .toList();
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Usuario> buscarPorEmail(@PathVariable String email) {
+        return ResponseEntity.of(repositorioUsuario.findByEmail(email));
+    }
 
 }

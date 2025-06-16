@@ -184,5 +184,11 @@ public class ContratoControlador {
     }
 
 
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<List<Contrato>> obtenerContratosPorDni(@PathVariable String dni) {
+        List<Contrato> contratos = contratoRepositorio.findByDni(dni);
+        return ResponseEntity.ok(contratos);
+    }
+
 
 }

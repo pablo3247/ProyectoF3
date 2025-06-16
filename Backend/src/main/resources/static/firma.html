@@ -92,7 +92,31 @@
   }
 
   async function cargarContratos() {
-    const res = await fetch("/api/contratos", { headers });
+  const dni = localStorage.getItem("dni");
+  if (!dni) {
+    alert("No se encontró el DNI del usuario. Vuelve a iniciar sesión.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/contratos/dni/${dni}`, { headers });
+    if (!res.ok) throw new Error("Fallo al obtener contratos");
+    const contratos = await res.json();
+    const select = document.getElementById("contratoSelect");
+    select.innerHTML = "";
+
+    contratos.filter(c => c.estado === "pendiente").forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.id;
+      option.textContent = `${c.nombre}`;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Error al cargar contratos:", err);
+    document.getElementById("mensaje").textContent = "❌ Error al cargar contratos.";
+  }
+
+    const res = await fetch(`/api/contratos/dni/${dni}`, { headers });
     const contratos = await res.json();
     const select = document.getElementById("contratoSelect");
     contratos.filter(c => c.estado === "pendiente").forEach(c => {

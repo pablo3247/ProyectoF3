@@ -29,7 +29,7 @@ public class SeguridadConfig {
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
                                 "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear"
+                                "/api/auth/login", "/api/usuarios/crear",  "/api/usuarios/email/**"
                         ).permitAll()
 
                         // Solo GET de contratos es público
@@ -38,6 +38,11 @@ public class SeguridadConfig {
                         // Acciones protegidas
                         .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/contratos/*/firmar").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/contratos/*/descargar-pdf").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/contratos/dni/**").hasAnyRole("ADMIN", "USER")
+
+
 
                         // Otros endpoints de contratos requieren ADMIN (si quieres protegerlos)
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
