@@ -3,6 +3,7 @@ package com.ejemplo.aplicacion.configuracion;
 import com.ejemplo.aplicacion.seguridad.FiltroJwt;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -28,15 +29,22 @@ public class SeguridadConfig {
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
                                 "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear", "/api/contratos/**"
+                                "/api/auth/login", "/api/usuarios/crear"
                         ).permitAll()
 
-                        // Estas rutas requieren autenticación específica
+                        // Solo GET de contratos es público
+                        .requestMatchers(HttpMethod.GET, "/api/contratos").permitAll()
+
+                        // Acciones protegidas
                         .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
 
+                        // Otros endpoints de contratos requieren ADMIN (si quieres protegerlos)
+                        .requestMatchers("/api/contratos/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
+
 
 
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);

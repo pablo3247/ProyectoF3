@@ -4,6 +4,10 @@ import com.ejemplo.aplicacion.modelo.Contrato;
 import com.ejemplo.aplicacion.modelo.Usuario;
 import com.ejemplo.aplicacion.repositorio.RepositorioContrato;
 import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -15,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -30,6 +35,30 @@ public class ContratoControlador {
     @Autowired
     private RepositorioUsuario repositorioUsuario;
 
+    private byte[] generarPDFContrato(Usuario usuario, String titulo) throws IOException {
+        PDDocument documento = new PDDocument();
+        PDPage pagina = new PDPage();
+        documento.addPage(pagina);
+
+        PDPageContentStream contenido = new PDPageContentStream(documento, pagina);
+        contenido.setFont(PDType1Font.HELVETICA_BOLD, 14);
+        contenido.beginText();
+        contenido.newLineAtOffset(100, 700);
+        contenido.showText("Contrato: " + titulo);
+        contenido.newLineAtOffset(0, -20);
+        contenido.showText("Nombre: " + usuario.getNombre());
+        contenido.newLineAtOffset(0, -20);
+        contenido.showText("Email: " + usuario.getEmail());
+        contenido.newLineAtOffset(0, -20);
+        contenido.showText("DNI: " + usuario.getDni());
+        contenido.endText();
+        contenido.close();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        documento.save(out);
+        documento.close();
+        return out.toByteArray();
+    }
 
     @PostMapping("/{id}/subir-pdf")
     public ResponseEntity<String> subirPdfEnBlob(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
@@ -93,6 +122,13 @@ public class ContratoControlador {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(opt.get().getArchivoPdf());
     }
+
+    @GetMapping
+    public ResponseEntity<List<Contrato>> obtenerContratos() {
+        List<Contrato> contratos = contratoRepositorio.findAll();
+        return ResponseEntity.ok(contratos);
+    }
+
 
 
 }

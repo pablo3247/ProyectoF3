@@ -82,7 +82,19 @@
 
       // Paso 2: Obtener contratos
       const contratosRes = await fetch("/api/contratos", { headers });
-      const contratosJson = await contratosRes.json();
+
+    if (!contratosRes.ok) {
+    throw new Error(`Error HTTP ${contratosRes.status}: No se pudo obtener contratos`);
+    }
+
+    const contentType = contratosRes.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+    const errorText = await contratosRes.text();
+    throw new Error("La respuesta no es JSON: " + errorText);
+    }
+
+    const contratosJson = await contratosRes.json();
+
 
       if (!Array.isArray(contratosJson)) {
         throw new Error("La respuesta de contratos no es un array");
