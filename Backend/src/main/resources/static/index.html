@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,7 +20,6 @@
 </form>
 
 <p id="mensaje"></p>
-
 
 <p>¿No tienes cuenta?</p>
 <button onclick="window.location.href='/formulario.html'">Registrarse</button>
@@ -43,10 +43,23 @@
       const data = await respuesta.json();
 
       if (respuesta.ok && data.mensaje === "Login exitoso") {
-        localStorage.setItem('token', data.token || 'FAKE-TOKEN');
-        localStorage.setItem('rol', data.rol);
-        document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
-        window.location.href = '/selector.html';
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('rol', data.rol);
+
+          // Obtener el usuario por email
+          const usuarioRes = await fetch(`/api/usuarios/email/${datos.email}`, {
+            headers: { Authorization: "Bearer " + data.token }
+          });
+
+          const usuario = await usuarioRes.json();
+          localStorage.setItem("dni", usuario.dni);
+
+          document.getElementById('mensaje').textContent = 'Inicio de sesión exitoso';
+          window.location.href = '/selector.html';
+        } else {
+          document.getElementById('mensaje').textContent = 'Token no recibido, login fallido';
+        }
       } else {
         document.getElementById('mensaje').textContent = data.mensaje || 'Error al iniciar sesión';
       }

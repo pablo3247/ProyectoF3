@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Firma del contrato</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
@@ -9,70 +9,143 @@
       border: 2px solid #ccc;
       border-radius: 5px;
       display: block;
-      margin: auto;
+      margin: 20px auto;
       background-color: white;
     }
-
-    .botones {
+    .botones, .formulario {
       text-align: center;
       margin-top: 20px;
     }
-
-    button {
+    button, select {
       padding: 10px 20px;
       margin: 0 10px;
+    }
+    #mensaje {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+      color: red;
     }
   </style>
 </head>
 <body>
-<h2 style="text-align: center;">Firma del contrato</h2>
-
-<canvas id="canvas" width="600" height="200"></canvas>
-
-<div class="botones">
-  <button onclick="borrarFirma()">Borrar</button>
-  <button onclick="guardarFirma()">Guardar Firma</button>
+<h2 style="text-align: center;">Firmar Contrato</h2>
+<div class="formulario">
+  <label for="contratoSelect">Selecciona un contrato:</label>
+  <select id="contratoSelect"></select>
 </div>
+<canvas id="canvas" width="600" height="200"></canvas>
+<div class="botones">
+  <button id="borrar">🗑️ Borrar</button>
+  <button id="guardar">✅ Guardar Firma</button>
+  <button id="descargar">📥 Descargar Contrato</button>
+</div>
+<p id="mensaje"></p>
 
 <script>
-  // Verifica autenticación
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('No estás autenticado, redirigiendo a login...');
-    window.location.href = 'index.html';
+  const token = localStorage.getItem("token");
+  const dni = localStorage.getItem("dni");
+
+  if (!token || !dni) {
+    alert("No estás autenticado o falta el DNI. Redirigiendo a login...");
+    window.location.href = "index.html";
   }
 
+  const headers = { Authorization: "Bearer " + token };
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  let dibujando = false;
+  let pintando = false;
 
-  canvas.addEventListener('mousedown', () => dibujando = true);
-  canvas.addEventListener('mouseup', () => dibujando = false);
-  canvas.addEventListener('mousemove', dibujar);
-
-  function dibujar(evento) {
-    if (!dibujando) return;
+  function startDraw(e) {
+    pintando = true;
+    draw(e);
+  }
+  function endDraw() {
+    pintando = false;
+    ctx.beginPath();
+  }
+  function draw(e) {
+    if (!pintando) return;
+    const rect = canvas.getBoundingClientRect();
     ctx.lineWidth = 2;
     ctx.lineCap = "round";
     ctx.strokeStyle = "black";
-
-    const rect = canvas.getBoundingClientRect();
-    ctx.lineTo(evento.clientX - rect.left, evento.clientY - rect.top);
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(evento.clientX - rect.left, evento.clientY - rect.top);
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
   }
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("mousemove", draw);
 
   function borrarFirma() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function guardarFirma() {
-    const firmaData = canvas.toDataURL("image/png");
-    sessionStorage.setItem("firmaImagen", firmaData);
-    alert("Firma guardada correctamente.");
-    window.location.href = "resumen.html";
+  async function cargarContratos() {
+    try {
+      const res = await fetch(`/api/contratos/dni/${dni}`, { headers });
+      const contratos = await res.json();
+      const select = document.getElementById("contratoSelect");
+      contratos.filter(c => c.estado === "pendiente").forEach(c => {
+        const option = document.createElement("option");
+        option.value = c.id;
+        option.textContent = `${c.nombre} (${c.dni})`;
+        select.appendChild(option);
+      });
+    } catch (err) {
+      document.getElementById("mensaje").textContent = "Error al cargar contratos.";
+      console.error(err);
+    }
   }
+
+  async function guardarFirma() {
+    const idContrato = document.getElementById("contratoSelect").value;
+    if (!idContrato) return alert("Selecciona un contrato.");
+
+    const firmaBase64 = canvas.toDataURL("image/png");
+    const res = await fetch(`/api/contratos/${idContrato}/firmar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({ firma: firmaBase64 })
+    });
+
+    const mensaje = await res.text();
+    document.getElementById("mensaje").textContent = mensaje;
+    if (res.ok) {
+      borrarFirma();
+      document.getElementById("contratoSelect").innerHTML = "";
+      cargarContratos();
+    }
+  }
+
+  async function descargarContrato() {
+    const idContrato = document.getElementById("contratoSelect").value;
+    if (!idContrato) return alert("Selecciona un contrato.");
+
+    const res = await fetch(`/api/contratos/${idContrato}/descargar-pdf`, { headers });
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "contrato_firmado.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // Asignar funciones a botones
+  document.getElementById("borrar").addEventListener("click", borrarFirma);
+  document.getElementById("guardar").addEventListener("click", guardarFirma);
+  document.getElementById("descargar").addEventListener("click", descargarContrato);
+
+  // Cargar al inicio
+  cargarContratos();
 </script>
 </body>
 </html>

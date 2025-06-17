@@ -3,6 +3,7 @@ package com.ejemplo.aplicacion.controlador;
 import com.ejemplo.aplicacion.dto.LoginDTO;
 import com.ejemplo.aplicacion.modelo.Usuario;
 import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
+import com.ejemplo.aplicacion.seguridad.ServicioJwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class ControladorAutenticacion {
     @Autowired
     private RepositorioUsuario repositorioUsuario;
 
+    @Autowired
+    private ServicioJwt servicioJwt;
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginDTO credenciales) {
         Optional<Usuario> usuarioOpt = repositorioUsuario.findByEmail(credenciales.getEmail());
@@ -29,8 +33,13 @@ public class ControladorAutenticacion {
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             if (usuario.getContrasena().equals(credenciales.getContrasena())) {
+                // Generar token JWT
+                String token = servicioJwt.generarToken(usuario);
+
                 respuesta.put("mensaje", "Login exitoso");
                 respuesta.put("rol", usuario.getRol());
+                respuesta.put("token", token);
+
                 return ResponseEntity.ok(respuesta);
             } else {
                 respuesta.put("mensaje", "Contraseña incorrecta");
@@ -41,6 +50,4 @@ public class ControladorAutenticacion {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
         }
     }
-
 }
-
