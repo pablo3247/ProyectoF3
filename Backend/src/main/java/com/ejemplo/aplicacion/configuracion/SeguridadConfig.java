@@ -33,7 +33,7 @@ public class SeguridadConfig {
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
                                 "/nuevoContrato.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**"
+                                "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**","/error","verContratos.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/contratos").permitAll()
                         .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")

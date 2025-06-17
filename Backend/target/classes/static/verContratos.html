@@ -78,6 +78,11 @@
 <script>
   const token = localStorage.getItem("token");
 
+  if (!token) {
+    alert("Debes iniciar sesión");
+    window.location.href = "/login.html";
+  }
+
   function getAuthHeaders(extra = {}) {
     return {
       ...extra,
@@ -91,6 +96,11 @@
       headers: getAuthHeaders()
     })
     .then(res => {
+      if (res.status === 401) {
+        alert("No autorizado. Por favor, inicia sesión de nuevo.");
+        window.location.href = "/login.html";
+        throw new Error("No autorizado");
+      }
       if (!res.ok) throw new Error("No se pudo cargar contratos");
       return res.json();
     })
@@ -98,13 +108,12 @@
       const tbody = document.querySelector("#tablaContratos tbody");
       tbody.innerHTML = "";
       data.forEach(contrato => {
-        const fila = document.createElement("tr");
-
-        // Mostrar botón si hay PDF
-        const pdfLink = contrato.urlArchivoPdf
+        const tienePdf = contrato.archivopdf || contrato.archivoPdf;
+        const pdfLink = tienePdf
           ? `<button onclick="abrirContrato(${contrato.id})">Abrir PDF</button>`
           : "-";
 
+        const fila = document.createElement("tr");
         fila.innerHTML = `
           <td>${contrato.id}</td>
           <td>${contrato.nombre}</td>
@@ -123,21 +132,22 @@
 
   function abrirContrato(id) {
     fetch(`/api/contratos/${id}/url-pdf`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: getAuthHeaders()
     })
-    .then(res => {
-      if (!res.ok) throw new Error("No se pudo obtener la URL del PDF");
-      return res.text(); // cambiar a res.json() si devuelves { url: "..." }
+    .then(response => {
+      if (response.status === 401) {
+        alert("No autorizado. Por favor, inicia sesión de nuevo.");
+        window.location.href = "/login.html";
+        throw new Error("No autorizado");
+      }
+      if (!response.ok) throw new Error("No se pudo obtener la URL del PDF");
+      return response.text();
     })
     .then(url => {
       window.open(url, "_blank");
     })
-    .catch(err => {
-      console.error("Error al abrir contrato:", err);
-      alert("❌ No se pudo abrir el PDF: " + err.message);
+    .catch(error => {
+      alert(error.message);
     });
   }
 
@@ -156,10 +166,15 @@
       body: JSON.stringify({ nombre, urlArchivoPdf: archivoPDF || null })
     })
     .then(res => {
+      if (res.status === 401) {
+        alert("No autorizado. Por favor, inicia sesión de nuevo.");
+        window.location.href = "/login.html";
+        throw new Error("No autorizado");
+      }
       if (!res.ok) throw new Error("Error al crear contrato");
-      return res.text();
+      return res.json();
     })
-    .then(() => {
+    .then(data => {
       document.getElementById("nombre").value = "";
       document.getElementById("archivoPDF").value = "";
       cargarContratos();
@@ -175,6 +190,11 @@
       headers: getAuthHeaders()
     })
     .then(res => {
+      if (res.status === 401) {
+        alert("No autorizado. Por favor, inicia sesión de nuevo.");
+        window.location.href = "/login.html";
+        throw new Error("No autorizado");
+      }
       if (!res.ok) throw new Error("Error al eliminar contrato");
       cargarContratos();
     })
@@ -209,7 +229,7 @@
     fetch(`/api/contratos/${id}/subir-pdf`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}` // NO incluir Content-Type para que fetch lo maneje
+        Authorization: `Bearer ${token}`
       },
       body: formData
     })
@@ -221,6 +241,12 @@
         responseBody = await response.json();
       } else {
         responseBody = await response.text();
+      }
+
+      if (response.status === 401) {
+        alert("No autorizado. Por favor, inicia sesión de nuevo.");
+        window.location.href = "/login.html";
+        throw new Error("No autorizado");
       }
 
       if (!response.ok) {
@@ -245,12 +271,8 @@
     });
   });
 
-  if (!token) {
-    alert("Debes iniciar sesión");
-    window.location.href = "/login.html";
-  } else {
-    window.onload = cargarContratos;
-  }
+  window.onload = cargarContratos;
 </script>
+
 </body>
 </html>

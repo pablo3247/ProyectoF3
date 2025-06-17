@@ -1,22 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Crear Contrato</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Opcional: estilos para lista de usuarios con checkboxes */
+    #listaUsuarios {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    #listaUsuarios label {
+      display: block;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 <h1>Crear Contrato</h1>
 
 <form id="formCrearContrato">
-  <label for="dniUsuario">Selecciona Usuario (DNI):</label>
-  <select id="dniUsuario" required></select><br><br>
+  <fieldset>
+    <legend>Selecciona Usuarios:</legend>
+    <div id="listaUsuarios">
+      <!-- Aquí se cargarán los usuarios con checkbox -->
+    </div>
+  </fieldset>
 
-  <label for="nombreContrato">Nombre del contrato:</label>
-  <input type="text" id="nombreContrato" required><br><br>
+  <label for="nombreContrato">Nombre del contrato:</label><br />
+  <input type="text" id="nombreContrato" required /><br /><br />
 
-  <label for="archivoContrato">Archivo PDF:</label>
-  <input type="file" id="archivoContrato" accept="application/pdf" required><br><br>
+  <label for="archivoContrato">Archivo PDF:</label><br />
+  <input type="file" id="archivoContrato" accept="application/pdf" required /><br /><br />
 
   <button type="submit">Crear Contrato</button>
 </form>
@@ -34,17 +53,19 @@
 
   function cargarUsuarios() {
     fetch("/api/usuarios", { headers })
-      .then(res => res.json())
-      .then(usuarios => {
-        const select = document.getElementById("dniUsuario");
-        usuarios.forEach(u => {
-          const option = document.createElement("option");
-          option.value = u.dni;
-          option.textContent = `${u.nombre} (${u.dni})`;
-          select.appendChild(option);
+      .then((res) => res.json())
+      .then((usuarios) => {
+        const contenedor = document.getElementById("listaUsuarios");
+        usuarios.forEach((u) => {
+          const label = document.createElement("label");
+          label.innerHTML = `
+            <input type="checkbox" name="usuarios" value="${u.dni}" />
+            ${u.nombre} (${u.dni})
+          `;
+          contenedor.appendChild(label);
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error al cargar usuarios:", err);
         alert("Error al cargar usuarios");
       });
@@ -53,17 +74,19 @@
   document.getElementById("formCrearContrato").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const dni = document.getElementById("dniUsuario").value;
+    const checkboxes = document.querySelectorAll('input[name="usuarios"]:checked');
+    const dnis = Array.from(checkboxes).map((cb) => cb.value);
+
     const titulo = document.getElementById("nombreContrato").value.trim();
     const archivo = document.getElementById("archivoContrato").files[0];
 
-    if (!dni || !titulo || !archivo) {
-      alert("Todos los campos son obligatorios.");
+    if (dnis.length === 0 || !titulo || !archivo) {
+      alert("Debes seleccionar al menos un usuario, ingresar un nombre y seleccionar un archivo PDF.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("dni", dni);
+    dnis.forEach((dni) => formData.append("dnis", dni));
     formData.append("titulo", titulo);
     formData.append("file", archivo);
 
@@ -71,7 +94,7 @@
       const res = await fetch("/api/contratos/crear-con-archivo", {
         method: "POST",
         headers: { Authorization: "Bearer " + token },
-        body: formData
+        body: formData,
       });
 
       const mensaje = await res.text();

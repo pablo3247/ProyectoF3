@@ -16,7 +16,8 @@ public class AzureBlobConfig {
 
         StorageSharedKeyCredential credential = new StorageSharedKeyCredential(accountName, accountKey);
 
-        String endpoint = "http://192.168.0.100:10000/" + accountName;
+        // Para Azurite/Emulador, solo la URL base sin el nombre cuenta
+        String endpoint = "http://192.168.0.100:10000/";
 
         String containerName = "contratos";
 

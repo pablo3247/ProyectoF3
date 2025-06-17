@@ -1,22 +1,19 @@
 package com.ejemplo.aplicacion.controlador;
 
+import com.ejemplo.aplicacion.Util.AzureBlobSasUtil;
 import com.ejemplo.aplicacion.dto.ContratoResumen;
 import com.ejemplo.aplicacion.modelo.Contrato;
 import com.ejemplo.aplicacion.modelo.Usuario;
 import com.ejemplo.aplicacion.repositorio.ContratoRepository;
 import com.ejemplo.aplicacion.repositorio.RepositorioUsuario;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import com.azure.storage.blob.*;
-import com.azure.storage.blob.models.*;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,19 +21,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.azure.storage.blob.*;
+import com.azure.storage.blob.models.*;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-
 @RestController
 @RequestMapping("/api/contratos")
-@CrossOrigin(origins = "*")
 public class ContratoControlador {
+
+    @Autowired
+    private AzureBlobSasUtil azureBlobSasUtil;
 
     @Autowired
     private ContratoRepository contratoRepositorio;
@@ -44,9 +44,9 @@ public class ContratoControlador {
     @Autowired
     private RepositorioUsuario repositorioUsuario;
 
-    @Autowired
-    private BlobContainerClient containerClient;
-
+    /**
+     * Crear contrato con archivo PDF subido
+     */
     @PostMapping("/crear-con-archivo")
     public ResponseEntity<String> crearContratoConArchivo(
             @RequestParam("dni") String dni,
@@ -68,19 +68,20 @@ public class ContratoControlador {
         contrato.setFechaFirma(LocalDateTime.now());
 
         try {
-            // Primero guardamos el contrato para obtener el ID
+            // Guardar contrato para obtener ID
             Contrato contratoGuardado = contratoRepositorio.save(contrato);
 
-            if (!containerClient.exists()) {
-                containerClient.create();
+            // Crear contenedor si no existe
+            if (!azureBlobSasUtil.getContainerClient().exists()) {
+                azureBlobSasUtil.getContainerClient().create();
             }
 
-            // Nombre del archivo en blob
+            // Subir archivo PDF a Blob Storage
             String blobName = "contrato_" + contratoGuardado.getId() + ".pdf";
-            BlobClient blobClient = containerClient.getBlobClient(blobName);
+            BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
             blobClient.upload(file.getInputStream(), file.getSize(), true);
 
-            // Solo guardamos el nombre del archivo, no la URL local de blob
+            // Guardar nombre del archivo (blobName)
             contratoGuardado.setArchivopdf(blobName);
             contratoRepositorio.save(contratoGuardado);
 
@@ -92,33 +93,9 @@ public class ContratoControlador {
         }
     }
 
-
-
-    private byte[] generarPDFContrato(Usuario usuario, String titulo) throws IOException {
-        PDDocument documento = new PDDocument();
-        PDPage pagina = new PDPage();
-        documento.addPage(pagina);
-
-        PDPageContentStream contenido = new PDPageContentStream(documento, pagina);
-        contenido.setFont(PDType1Font.HELVETICA_BOLD, 14);
-        contenido.beginText();
-        contenido.newLineAtOffset(100, 700);
-        contenido.showText("Contrato: " + titulo);
-        contenido.newLineAtOffset(0, -20);
-        contenido.showText("Nombre: " + usuario.getNombre());
-        contenido.newLineAtOffset(0, -20);
-        contenido.showText("Email: " + usuario.getEmail());
-        contenido.newLineAtOffset(0, -20);
-        contenido.showText("DNI: " + usuario.getDni());
-        contenido.endText();
-        contenido.close();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        documento.save(out);
-        documento.close();
-        return out.toByteArray();
-    }
-
+    /**
+     * Firmar contrato con imagen de firma en Base64
+     */
     @PostMapping("/{id}/firmar")
     public ResponseEntity<String> firmarContrato(@PathVariable Long id, @RequestBody Map<String, String> datos) {
         try {
@@ -129,12 +106,11 @@ public class ContratoControlador {
 
             Contrato contrato = opt.get();
 
-            // ⚠️ Cargar PDF desde Azure Blob si no está en BBDD
             byte[] pdfBytes;
-            if (contrato.getArchivoPdf() != null) {
+            if (contrato.getArchivoPdf() != null && contrato.getArchivoPdf().length > 0) {
                 pdfBytes = contrato.getArchivoPdf();
             } else if (contrato.getArchivopdf() != null) {
-                BlobClient blobClient = containerClient.getBlobClient(contrato.getArchivopdf());
+                BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(contrato.getArchivopdf());
                 if (!blobClient.exists()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("PDF no encontrado en Blob");
                 }
@@ -152,12 +128,13 @@ public class ContratoControlador {
 
             byte[] firmaBytes = Base64.getDecoder().decode(firmaBase64.split(",")[1]);
             BufferedImage firmaImage = ImageIO.read(new ByteArrayInputStream(firmaBytes));
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
 
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             try (PDDocument doc = PDDocument.load(pdfBytes)) {
                 PDPage pagina = doc.getPage(0);
                 PDImageXObject firma = PDImageXObject.createFromByteArray(doc, firmaBytes, "firma");
-                PDPageContentStream contenido = new PDPageContentStream(doc, pagina, PDPageContentStream.AppendMode.APPEND, true);
+                PDPageContentStream contenido = new PDPageContentStream(doc, pagina,
+                        PDPageContentStream.AppendMode.APPEND, true);
                 contenido.drawImage(firma, 100, 100, 150, 50);
                 contenido.close();
                 doc.save(out);
@@ -178,29 +155,33 @@ public class ContratoControlador {
         }
     }
 
-
+    /**
+     * Subir PDF directamente a contrato (base de datos)
+     */
     @PostMapping("/{id}/subir-pdf")
-    public ResponseEntity<String> subirPdfEnBlob(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> subirPdfEnContrato(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
             Optional<Contrato> opt = contratoRepositorio.findById(id);
-            if (opt.isEmpty()) return ResponseEntity.notFound().build();
+            if (opt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado");
 
             Contrato contrato = opt.get();
             contrato.setArchivoPdf(file.getBytes());
             contratoRepositorio.save(contrato);
 
-            return ResponseEntity.ok("✅ PDF guardado en la base de datos");
+            return ResponseEntity.ok("PDF guardado correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Error al guardar el PDF: " + e.getMessage());
+                    .body("Error al guardar PDF: " + e.getMessage());
         }
     }
 
+    /**
+     * Asignar contrato a usuario (sin archivo)
+     */
     @PostMapping("/asignar")
     public ResponseEntity<String> asignarContrato(@RequestBody Map<String, String> datos) {
         String dni = datos.get("dni");
         String titulo = datos.get("titulo");
-        String contenido = datos.get("contenido");
 
         Optional<Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
         if (usuarioOpt.isEmpty()) {
@@ -213,12 +194,17 @@ public class ContratoControlador {
         contrato.setDni(usuario.getDni());
         contrato.setEmail(usuario.getEmail());
         contrato.setEstado("pendiente");
+        contrato.setFirmado(false);
+        contrato.setFechaFirma(null);
 
         contratoRepositorio.save(contrato);
 
         return ResponseEntity.ok("Contrato asignado correctamente");
     }
 
+    /**
+     * Crear contrato simple (sin archivo ni usuario)
+     */
     @PostMapping("/crear")
     public ResponseEntity<Map<String, Object>> crearContrato(@RequestBody Contrato contrato) {
         Contrato guardado = contratoRepositorio.save(contrato);
@@ -227,8 +213,9 @@ public class ContratoControlador {
         return ResponseEntity.ok(respuesta);
     }
 
-
-
+    /**
+     * Descargar PDF desde Blob Storage
+     */
     @GetMapping("/{id}/descargar-pdf")
     public ResponseEntity<byte[]> descargarPdf(@PathVariable Long id) {
         Optional<Contrato> opt = contratoRepositorio.findById(id);
@@ -238,7 +225,7 @@ public class ContratoControlador {
 
         try {
             String blobName = opt.get().getArchivopdf();
-            BlobClient blobClient = containerClient.getBlobClient(blobName);
+            BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
 
             if (!blobClient.exists()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -257,16 +244,56 @@ public class ContratoControlador {
         }
     }
 
-
-    @Autowired
-    private ContratoRepository contratoRepository;
-
-
+    /**
+     * Listar contratos resumidos por DNI
+     */
     @GetMapping("/dni/{dni}")
     public ResponseEntity<List<ContratoResumen>> getContratosPorDni(@PathVariable String dni) {
-        List<ContratoResumen> lista = contratoRepository.findContratosResumenPorDni(dni);
+        List<ContratoResumen> lista = contratoRepositorio.findContratosResumenPorDni(dni);
         return ResponseEntity.ok(lista);
     }
 
+    /**
+     * Obtener URL para descargar PDF (solo ruta interna)
+     */
+    @GetMapping("/{id}/url-pdf")
+    public ResponseEntity<String> obtenerUrlPdfConSas(@PathVariable Long id) {
+        Optional<Contrato> contratoOpt = contratoRepositorio.findById(id);
+        if (contratoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
+        Contrato contrato = contratoOpt.get();
+        String blobName = contrato.getArchivopdf();
+
+        if (blobName == null || blobName.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay PDF asociado a este contrato");
+        }
+
+        try {
+            String urlConSas = azureBlobSasUtil.generarUrlSas(blobName);
+            return ResponseEntity.ok(urlConSas);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error generando URL SAS: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Eliminar contrato por ID
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarContrato(@PathVariable Long id) {
+        if (!contratoRepositorio.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado");
+        }
+        contratoRepositorio.deleteById(id);
+        return ResponseEntity.ok("Contrato eliminado");
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<Contrato>> listarContratos() {
+        List<Contrato> contratos = contratoRepositorio.findAll();
+        return ResponseEntity.ok(contratos);
+    }
 }
