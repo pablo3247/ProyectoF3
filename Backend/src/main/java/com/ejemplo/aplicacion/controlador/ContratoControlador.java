@@ -29,6 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -41,6 +42,9 @@ public class ContratoControlador {
 
     @Autowired
     private RepositorioUsuario repositorioUsuario;
+
+    @Autowired
+    private BlobContainerClient containerClient;
 
     @PostMapping("/crear-con-archivo")
     public ResponseEntity<String> crearContratoConArchivo(
@@ -59,28 +63,29 @@ public class ContratoControlador {
         contrato.setDni(usuario.getDni());
         contrato.setEmail(usuario.getEmail());
         contrato.setEstado("pendiente");
+        contrato.setFirmado(false);  // <-- Esto es importante para no violar la restricción NOT NULL
+        contrato.setFechaFirma(LocalDateTime.now());
 
         try {
-            // ⚙️ Configuración de Azurite (local)
-            String connectionString = "UseDevelopmentStorage=true";
-            BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-                    .connectionString(connectionString).buildClient();
+            // Primero guardamos el contrato para generar el ID
+            Contrato contratoGuardado = contratoRepositorio.save(contrato);
 
-            BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("contratos");
             if (!containerClient.exists()) {
                 containerClient.create();
             }
 
-            String blobName = "contrato_" + UUID.randomUUID() + ".pdf";
+            // Ahora construimos el nombre del blob con el ID generado
+            String blobName = "contrato_" + contratoGuardado.getId() + ".pdf";
             BlobClient blobClient = containerClient.getBlobClient(blobName);
             blobClient.upload(file.getInputStream(), file.getSize(), true);
 
+            // Guardamos la URL en el contrato y actualizamos
             String url = blobClient.getBlobUrl();
-            contrato.setUrlArchivoPdf(url); // Guarda la URL en la BBDD
+            contratoGuardado.setUrlArchivoPdf(url);
+            contratoGuardado.setArchivopdf(blobName);  // Si tienes este campo para guardar nombre archivo
+            contratoRepositorio.save(contratoGuardado);
 
-            contratoRepositorio.save(contrato);
-
-            return ResponseEntity.ok("✅ Contrato creado con archivo en Azurite");
+            return ResponseEntity.ok("✅ Contrato creado con archivo en Azurite y nombre contrato_" + contratoGuardado.getId() + ".pdf");
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

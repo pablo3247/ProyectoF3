@@ -42,7 +42,7 @@ public class SeguridadConfig {
                         .requestMatchers("/api/contratos/*/descargar-pdf").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/dni/**").hasAnyRole("ADMIN", "USER")
 
-
+                        .requestMatchers("/api/contratos/crear-con-archivo").permitAll()
 
                         // Otros endpoints de contratos requieren ADMIN (si quieres protegerlos)
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")

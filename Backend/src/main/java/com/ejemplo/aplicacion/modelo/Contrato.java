@@ -1,9 +1,10 @@
 package com.ejemplo.aplicacion.modelo;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "contrato")
+@Table(name = "contratos")
 public class Contrato {
 
     @Id
@@ -18,12 +19,19 @@ public class Contrato {
 
     private String estado; // pendiente | firmado
 
+    private String archivopdf; // nombre del archivo, ej: contrato_1234.pdf
+
     @Lob
     @Column(name = "archivo_pdf")
-    private byte[] archivoPdf;
+    private byte[] archivoPdf; // contenido PDF
 
     @Column(name = "url_archivo_pdf")
-    private String urlArchivoPdf; // Nueva propiedad para guardar la URL del archivo en blob
+    private String urlArchivoPdf; // URL pública del blob
+
+    private Boolean firmado; // true o false para saber si está firmado
+
+    @Column(name = "fecha_firma")
+    private LocalDateTime fechaFirma; // fecha y hora de la firma
 
     // Getters y setters
 
@@ -67,6 +75,14 @@ public class Contrato {
         this.estado = estado;
     }
 
+    public String getArchivopdf() {
+        return archivopdf;
+    }
+
+    public void setArchivopdf(String archivopdf) {
+        this.archivopdf = archivopdf;
+    }
+
     public byte[] getArchivoPdf() {
         return archivoPdf;
     }
@@ -81,5 +97,21 @@ public class Contrato {
 
     public void setUrlArchivoPdf(String urlArchivoPdf) {
         this.urlArchivoPdf = urlArchivoPdf;
+    }
+
+    public Boolean getFirmado() {
+        return firmado;
+    }
+
+    public void setFirmado(Boolean firmado) {
+        this.firmado = firmado;
+    }
+
+    public LocalDateTime getFechaFirma() {
+        return fechaFirma;
+    }
+
+    public void setFechaFirma(LocalDateTime fechaFirma) {
+        this.fechaFirma = fechaFirma;
     }
 }
