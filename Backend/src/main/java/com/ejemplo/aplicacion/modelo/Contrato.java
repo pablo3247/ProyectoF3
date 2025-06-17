@@ -22,6 +22,9 @@ public class Contrato {
     @Column(name = "archivo_pdf")
     private byte[] archivoPdf;
 
+    @Column(name = "url_archivo_pdf")
+    private String urlArchivoPdf; // Nueva propiedad para guardar la URL del archivo en blob
+
     // Getters y setters
 
     public Long getId() {
@@ -70,5 +73,13 @@ public class Contrato {
 
     public void setArchivoPdf(byte[] archivoPdf) {
         this.archivoPdf = archivoPdf;
+    }
+
+    public String getUrlArchivoPdf() {
+        return urlArchivoPdf;
+    }
+
+    public void setUrlArchivoPdf(String urlArchivoPdf) {
+        this.urlArchivoPdf = urlArchivoPdf;
     }
 }

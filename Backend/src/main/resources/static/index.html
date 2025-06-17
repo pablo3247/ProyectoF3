@@ -51,6 +51,7 @@
           const usuarioRes = await fetch(`/api/usuarios/email/${datos.email}`, {
             headers: { Authorization: "Bearer " + data.token }
           });
+
           const usuario = await usuarioRes.json();
           localStorage.setItem("dni", usuario.dni);
 
@@ -67,6 +68,7 @@
     }
   });
 </script>
+
 
 </body>
 </html>

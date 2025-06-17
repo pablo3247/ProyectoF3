@@ -54,71 +54,29 @@
     e.preventDefault();
 
     const dni = document.getElementById("dniUsuario").value;
-    const nombre = document.getElementById("nombreContrato").value.trim();
+    const titulo = document.getElementById("nombreContrato").value.trim();
     const archivo = document.getElementById("archivoContrato").files[0];
 
-    if (!dni || !nombre || !archivo) {
+    if (!dni || !titulo || !archivo) {
       alert("Todos los campos son obligatorios.");
       return;
     }
 
+    const formData = new FormData();
+    formData.append("dni", dni);
+    formData.append("titulo", titulo);
+    formData.append("file", archivo);
+
     try {
-      // Paso 1: Crear contrato
-      const crearRes = await fetch("/api/contratos/asignar", {
+      const res = await fetch("/api/contratos/crear-con-archivo", {
         method: "POST",
-        headers: {
-          ...headers,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          dni,
-          titulo: nombre,
-          contenido: "Contrato asignado por admin"
-        })
-      });
-
-      if (!crearRes.ok) throw new Error("Error al crear contrato");
-      const creado = await crearRes.text();
-
-      // Paso 2: Obtener contratos
-      const contratosRes = await fetch("/api/contratos", { headers });
-
-    if (!contratosRes.ok) {
-    throw new Error(`Error HTTP ${contratosRes.status}: No se pudo obtener contratos`);
-    }
-
-    const contentType = contratosRes.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-    const errorText = await contratosRes.text();
-    throw new Error("La respuesta no es JSON: " + errorText);
-    }
-
-    const contratosJson = await contratosRes.json();
-
-
-      if (!Array.isArray(contratosJson)) {
-        throw new Error("La respuesta de contratos no es un array");
-      }
-
-      const contrato = contratosJson.reverse().find(c => c.nombre === nombre);
-
-      if (!contrato || !contrato.id) throw new Error("Contrato creado no encontrado");
-
-      // Paso 3: Subir PDF
-      const formData = new FormData();
-      formData.append("file", archivo);
-
-      const subirRes = await fetch(`/api/contratos/${contrato.id}/subir-pdf`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: "Bearer " + token },
         body: formData
       });
 
-      const subirMensaje = await subirRes.text();
-
-      document.getElementById("mensajeContrato").textContent = creado + " | " + subirMensaje;
+      const mensaje = await res.text();
+      document.getElementById("mensajeContrato").textContent = mensaje;
       document.getElementById("formCrearContrato").reset();
-
     } catch (error) {
       console.error(error);
       document.getElementById("mensajeContrato").textContent = "❌ Error: " + error.message;
@@ -129,4 +87,3 @@
 </script>
 </body>
 </html>
-

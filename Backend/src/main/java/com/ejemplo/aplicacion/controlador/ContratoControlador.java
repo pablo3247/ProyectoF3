@@ -13,6 +13,8 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import com.azure.storage.blob.*;
+import com.azure.storage.blob.models.*;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,53 @@ public class ContratoControlador {
 
     @Autowired
     private RepositorioUsuario repositorioUsuario;
+
+    @PostMapping("/crear-con-archivo")
+    public ResponseEntity<String> crearContratoConArchivo(
+            @RequestParam("dni") String dni,
+            @RequestParam("titulo") String titulo,
+            @RequestParam("file") MultipartFile file) {
+
+        Optional<Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        Contrato contrato = new Contrato();
+        contrato.setNombre(titulo);
+        contrato.setDni(usuario.getDni());
+        contrato.setEmail(usuario.getEmail());
+        contrato.setEstado("pendiente");
+
+        try {
+            // ⚙️ Configuración de Azurite (local)
+            String connectionString = "UseDevelopmentStorage=true";
+            BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+                    .connectionString(connectionString).buildClient();
+
+            BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient("contratos");
+            if (!containerClient.exists()) {
+                containerClient.create();
+            }
+
+            String blobName = "contrato_" + UUID.randomUUID() + ".pdf";
+            BlobClient blobClient = containerClient.getBlobClient(blobName);
+            blobClient.upload(file.getInputStream(), file.getSize(), true);
+
+            String url = blobClient.getBlobUrl();
+            contrato.setUrlArchivoPdf(url); // Guarda la URL en la BBDD
+
+            contratoRepositorio.save(contrato);
+
+            return ResponseEntity.ok("✅ Contrato creado con archivo en Azurite");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("❌ Error al subir el archivo: " + e.getMessage());
+        }
+    }
+
 
     private byte[] generarPDFContrato(Usuario usuario, String titulo) throws IOException {
         PDDocument documento = new PDDocument();

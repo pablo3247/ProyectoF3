@@ -5,19 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="16/06">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_06_2025_10_25_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_06_2025_10_25_[Changes]/static.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_06_2025_10_25__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_06_2025_12_10_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_09_06_2025_12_10__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ControladorUsuario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioContrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/RepositorioContrato.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/crearContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/crearContratos.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/firma.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/firma.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ControladorUsuario.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ControladorUsuario.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/crearContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/crearContratos.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/firma.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/firma.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/selector.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/selector.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,22 +124,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747994453859</updated>
-    </task>
-    <task id="LOCAL-00010" summary="02/06">
-      <option name="closed" value="true" />
-      <created>1748854666984</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1748854666984</updated>
-    </task>
-    <task id="LOCAL-00011" summary="02/06">
-      <option name="closed" value="true" />
-      <created>1748857400511</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1748857400511</updated>
     </task>
     <task id="LOCAL-00012" summary="02/06">
       <option name="closed" value="true" />
@@ -513,7 +501,23 @@
       <option name="project" value="LOCAL" />
       <updated>1750087946281</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="16/06">
+      <option name="closed" value="true" />
+      <created>1750092783638</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1750092783638</updated>
+    </task>
+    <task id="LOCAL-00060" summary="16/06">
+      <option name="closed" value="true" />
+      <created>1750092866700</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1750092866700</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
