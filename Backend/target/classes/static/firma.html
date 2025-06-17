@@ -34,6 +34,12 @@
   <label for="contratoSelect">Selecciona un contrato:</label>
   <select id="contratoSelect"></select>
 </div>
+
+<div id="vistaPreviaContainer" style="text-align: center; margin-top: 30px;">
+  <iframe id="vistaPrevia" width="80%" height="500px" style="border: 1px solid #ccc;"></iframe>
+</div>
+
+
 <canvas id="canvas" width="600" height="200"></canvas>
 <div class="botones">
   <button id="borrar">🗑️ Borrar</button>
@@ -84,22 +90,45 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  async function cargarContratos() {
-    try {
-      const res = await fetch(`/api/contratos/dni/${dni}`, { headers });
-      const contratos = await res.json();
-      const select = document.getElementById("contratoSelect");
-      contratos.filter(c => c.estado === "pendiente").forEach(c => {
-        const option = document.createElement("option");
-        option.value = c.id;
-        option.textContent = `${c.nombre} (${c.dni})`;
-        select.appendChild(option);
-      });
-    } catch (err) {
-      document.getElementById("mensaje").textContent = "Error al cargar contratos.";
-      console.error(err);
+ async function cargarContratos() {
+  try {
+    const res = await fetch(`/api/contratos/dni/${dni}`, { headers });
+
+    const text = await res.text();  // lee la respuesta como texto
+    console.log("Respuesta cruda:", text);
+
+    const contratos = JSON.parse(text);
+
+    const select = document.getElementById("contratoSelect");
+    select.innerHTML = "";  // limpia antes
+
+    if (contratos.length === 0) {
+      select.innerHTML = '<option value="">No hay contratos disponibles</option>';
+      document.getElementById("vistaPrevia").src = "";
+      return;
     }
+
+    // Agregar una opción por contrato
+    contratos.forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.id;
+      option.textContent = `${c.nombre} (${c.estado})`;
+      select.appendChild(option);
+    });
+
+    // Carga la vista previa del primer contrato
+    actualizarVistaPrevia();
+
+    // Cambiar la vista previa cuando cambie el select
+    select.addEventListener("change", actualizarVistaPrevia);
+
+  } catch (err) {
+    document.getElementById("mensaje").textContent = "Error al cargar contratos.";
+    console.error(err);
   }
+}
+
+
 
   async function guardarFirma() {
     const idContrato = document.getElementById("contratoSelect").value;
@@ -143,6 +172,34 @@
   document.getElementById("borrar").addEventListener("click", borrarFirma);
   document.getElementById("guardar").addEventListener("click", guardarFirma);
   document.getElementById("descargar").addEventListener("click", descargarContrato);
+
+
+async function actualizarVistaPrevia() {
+  const select = document.getElementById("contratoSelect");
+  const idContrato = select.value;
+  const iframe = document.getElementById("vistaPrevia");
+
+  if (!idContrato) {
+    iframe.src = "";
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/contratos/${idContrato}/descargar-pdf`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+    if (!res.ok) throw new Error("No autorizado o error al obtener PDF");
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    iframe.src = url;
+
+  } catch (error) {
+    iframe.src = "";
+    document.getElementById("mensaje").textContent = "Error al cargar vista previa: " + error.message;
+  }
+}
+
 
   // Cargar al inicio
   cargarContratos();

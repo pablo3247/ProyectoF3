@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -56,12 +57,13 @@ public class FiltroJwt extends OncePerRequestFilter {
                         return;
                     }
 
-                    String rol = "ROLE_" + rolExtraido.toUpperCase();
+                    // Añadir prefijo ROLE_ si no lo tiene
+                    String rol = rolExtraido.startsWith("ROLE_") ? rolExtraido : "ROLE_" + rolExtraido.toUpperCase();
 
                     User usuarioSpring = new User(
                             identificador,
                             "",
-                            Collections.singleton(() -> rol)
+                            Collections.singleton(new SimpleGrantedAuthority(rol))
                     );
 
                     UsernamePasswordAuthenticationToken autenticacion =

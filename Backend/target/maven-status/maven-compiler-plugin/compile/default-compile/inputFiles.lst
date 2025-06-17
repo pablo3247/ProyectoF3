@@ -1,9 +1,10 @@
+C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\dto\ContratoResumen.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\dto\PeticionLogin.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\configuracion\AzureBlobConfig.java
+C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\ContratoRepository.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ContratoControlador.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\seguridad\ServicioJwt.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\RepositorioUsuario.java
-C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\RepositorioContrato.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\repositorio\AuditLogRepositorio.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\controlador\ControladorAutenticacion.java
 C:\Users\moren\Documents\ProgramacionHome\ProyectoF3\Backend\src\main\java\com\ejemplo\aplicacion\dto\RespuestaLogin.java

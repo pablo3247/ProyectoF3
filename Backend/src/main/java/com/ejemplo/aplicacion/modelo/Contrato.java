@@ -1,5 +1,6 @@
 package com.ejemplo.aplicacion.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -22,8 +23,10 @@ public class Contrato {
     private String archivopdf; // nombre del archivo, ej: contrato_1234.pdf
 
     @Lob
+    @Basic(fetch = FetchType.EAGER) // ✅ Esto evita el error de lazy loading en @Lob
     @Column(name = "archivo_pdf")
-    private byte[] archivoPdf; // contenido PDF
+    @JsonIgnore  // <-- evita que se envíe en la respuesta JSON
+    private byte[] archivoPdf;
 
     @Column(name = "url_archivo_pdf")
     private String urlArchivoPdf; // URL pública del blob

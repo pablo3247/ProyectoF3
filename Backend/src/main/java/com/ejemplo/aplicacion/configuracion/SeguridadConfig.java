@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -24,34 +25,27 @@ public class SeguridadConfig {
         http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
-                                "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html", "/crearContratos.html",
+                                "/nuevoContrato.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear",  "/api/usuarios/email/**"
+                                "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**"
                         ).permitAll()
-
-                        // Solo GET de contratos es público
                         .requestMatchers(HttpMethod.GET, "/api/contratos").permitAll()
-
-                        // Acciones protegidas
                         .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/*/firmar").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/*/descargar-pdf").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/contratos/dni/**").hasAnyRole("ADMIN", "USER")
-
                         .requestMatchers("/api/contratos/crear-con-archivo").permitAll()
-
-                        // Otros endpoints de contratos requieren ADMIN (si quieres protegerlos)
                         .requestMatchers("/api/contratos/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
-
-
-
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
