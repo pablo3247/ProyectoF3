@@ -52,6 +52,22 @@
   <button onclick="crearContrato()">➕ Crear Contrato</button>
 </div>
 
+<h3>🔍 Filtrar Contratos</h3>
+<div>
+  <input type="text" id="filtroDNI" placeholder="DNI" />
+  <input type="text" id="filtroApellidos" placeholder="Apellidos" />
+  <input type="date" id="filtroFecha" />
+  <button onclick="cargarContratos()">Buscar</button>
+</div>
+
+<div style="margin-top: 10px;">
+  Página: <span id="paginaActual">1</span>
+  <button onclick="cambiarPagina(-1)">⬅</button>
+  <button onclick="cambiarPagina(1)">➡</button>
+</div>
+
+
+
 <table id="tablaContratos">
   <thead>
   <tr>
@@ -76,6 +92,10 @@
 <p id="mensajeSubida" class="mensaje"></p>
 
 <script>
+
+  let pagina = 0;
+const size = 10;
+
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -90,11 +110,22 @@
     };
   }
 
-  function cargarContratos() {
-    fetch("/api/contratos", {
-      method: "GET",
-      headers: getAuthHeaders()
-    })
+ function cargarContratos() {
+  const dni = document.getElementById("filtroDNI").value.trim();
+  const apellidos = document.getElementById("filtroApellidos").value.trim();
+  const fecha = document.getElementById("filtroFecha").value;
+
+  const queryParams = new URLSearchParams();
+  if (dni) queryParams.append("dni", dni);
+  if (apellidos) queryParams.append("apellidos", apellidos);
+  if (fecha) queryParams.append("fecha", fecha);
+  queryParams.append("page", pagina);
+  queryParams.append("size", size);
+
+  fetch(`/api/contratos?${queryParams.toString()}`, {
+    method: "GET",
+    headers: getAuthHeaders()
+  })
     .then(res => {
       if (res.status === 401) {
         alert("No autorizado. Por favor, inicia sesión de nuevo.");
@@ -107,9 +138,8 @@
     .then(data => {
       const tbody = document.querySelector("#tablaContratos tbody");
       tbody.innerHTML = "";
-      data.forEach(contrato => {
-        const tienePdf = contrato.archivopdf || contrato.archivoPdf;
-        const pdfLink = tienePdf
+      data.content.forEach(contrato => {
+        const pdfLink = contrato.archivopdf
           ? `<button onclick="abrirContrato(${contrato.id})">Abrir PDF</button>`
           : "-";
 
@@ -123,12 +153,15 @@
           </td>`;
         tbody.appendChild(fila);
       });
+
+      document.getElementById("paginaActual").innerText = pagina + 1;
     })
     .catch(err => {
       console.error(err);
       alert("Error al cargar contratos");
     });
-  }
+}
+
 
   function abrirContrato(id) {
     fetch(`/api/contratos/${id}/url-pdf`, {
@@ -270,6 +303,13 @@
       mensaje.innerText = "❌ " + error.message;
     });
   });
+
+function cambiarPagina(delta) {
+  pagina = Math.max(0, pagina + delta);
+  cargarContratos();
+}
+
+
 
   window.onload = cargarContratos;
 </script>

@@ -1,5 +1,6 @@
 package com.ejemplo.aplicacion.controlador;
 
+import org.springframework.data.domain.Page;
 import com.ejemplo.aplicacion.Util.AzureBlobSasUtil;
 import com.ejemplo.aplicacion.dto.ContratoResumen;
 import com.ejemplo.aplicacion.modelo.Contrato;
@@ -14,12 +15,20 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 
 import com.azure.storage.blob.*;
 import com.azure.storage.blob.models.*;
@@ -29,11 +38,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 @RestController
 @RequestMapping("/api/contratos")
 public class ContratoControlador {
+
+    private final ContratoRepository contratoRepository;
+
+    public ContratoControlador(ContratoRepository contratoRepository) {
+        this.contratoRepository = contratoRepository;
+    }
 
     @Autowired
     private AzureBlobSasUtil azureBlobSasUtil;
@@ -304,9 +320,36 @@ public class ContratoControlador {
         return ResponseEntity.ok("Contrato eliminado");
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<Contrato>> listarContratos() {
-        List<Contrato> contratos = contratoRepositorio.findAll();
-        return ResponseEntity.ok(contratos);
+    @GetMapping
+    public Page<Contrato> listarContratos(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) String apellidos,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Specification<Contrato> spec = Specification.where(null);
+
+        if (dni != null && !dni.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("dni")), "%" + dni.toLowerCase() + "%"));
+        }
+
+        if (apellidos != null && !apellidos.isEmpty()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(cb.lower(root.get("apellidos")), "%" + apellidos.toLowerCase() + "%"));
+        }
+
+        if (fecha != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("fechaFirma"), fecha));
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("fechaFirma").descending());
+
+        return contratoRepository.findAll(spec, pageable);
     }
+
+
+
 }
