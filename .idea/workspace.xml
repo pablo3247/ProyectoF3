@@ -5,18 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="Improvisando">
-      <change afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/dto/ContratoResumen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/modelo/Contrato.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/FiltroJwt.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/seguridad/FiltroJwt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/firma.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/firma.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/formulario.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/formulario.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/selector.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/selector.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/modelo/Contrato.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/seguridad/FiltroJwt.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/seguridad/FiltroJwt.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/firma.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/firma.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/formulario.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/formulario.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/selector.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/selector.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

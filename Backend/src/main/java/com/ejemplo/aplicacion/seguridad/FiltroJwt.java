@@ -112,6 +112,7 @@ public class FiltroJwt extends OncePerRequestFilter {
                 ruta.startsWith("/fonts/") ||
                 ruta.equals("/favicon.ico") ||
                 ruta.startsWith("/api/auth/login") ||
+                ruta.equals("/formulario.html") ||
                 ruta.startsWith("/api/usuarios/crear");
     }
 }

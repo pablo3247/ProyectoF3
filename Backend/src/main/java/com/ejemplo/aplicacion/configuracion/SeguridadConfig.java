@@ -33,19 +33,16 @@ public class SeguridadConfig {
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
                                 "/nuevoContrato.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**","/error","verContratos.html"
+                                "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**", "/error", "verContratos.html",
+                                "/formulario.html"
                         ).permitAll()
+                        .requestMatchers("/formulario.html").hasRole("ADMIN") // <--- aquí
+                        // el resto de reglas
                         .requestMatchers(HttpMethod.GET, "/api/contratos").permitAll()
-                        .requestMatchers("/api/contratos/*/subir-pdf").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/contratos/*/firmar").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/contratos/*/descargar-pdf").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/contratos/dni/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/contratos/crear-con-archivo").permitAll()
-                        .requestMatchers("/api/contratos/**").hasRole("ADMIN")
-
+                        // ...
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

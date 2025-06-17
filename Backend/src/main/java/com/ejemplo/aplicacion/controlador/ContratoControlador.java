@@ -49,111 +49,124 @@ public class ContratoControlador {
      */
     @PostMapping("/crear-con-archivo")
     public ResponseEntity<String> crearContratoConArchivo(
-            @RequestParam("dni") String dni,
+            @RequestParam("dnis") List<String> dnis,
             @RequestParam("titulo") String titulo,
             @RequestParam("file") MultipartFile file) {
 
-        Optional<Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
-        if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        if (dnis == null || dnis.isEmpty()) {
+            return ResponseEntity.badRequest().body("❌ Debes seleccionar al menos un usuario.");
         }
 
-        Usuario usuario = usuarioOpt.get();
-        Contrato contrato = new Contrato();
-        contrato.setNombre(titulo);
-        contrato.setDni(usuario.getDni());
-        contrato.setEmail(usuario.getEmail());
-        contrato.setEstado("pendiente");
-        contrato.setFirmado(false);
-        contrato.setFechaFirma(LocalDateTime.now());
+        List<String> creados = new ArrayList<>();
+        List<String> fallidos = new ArrayList<>();
+        String blobName = "contrato_" + UUID.randomUUID() + ".pdf";
 
         try {
-            // Guardar contrato para obtener ID
-            Contrato contratoGuardado = contratoRepositorio.save(contrato);
-
-            // Crear contenedor si no existe
+            // Asegurarse de que el contenedor existe
             if (!azureBlobSasUtil.getContainerClient().exists()) {
                 azureBlobSasUtil.getContainerClient().create();
             }
 
-            // Subir archivo PDF a Blob Storage
-            String blobName = "contrato_" + contratoGuardado.getId() + ".pdf";
+            // Subir el archivo una vez
             BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
             blobClient.upload(file.getInputStream(), file.getSize(), true);
 
-            // Guardar nombre del archivo (blobName)
-            contratoGuardado.setArchivopdf(blobName);
-            contratoRepositorio.save(contratoGuardado);
+            for (String dni : dnis) {
+                Optional<Usuario> usuarioOpt = repositorioUsuario.findByDni(dni);
+                if (usuarioOpt.isPresent()) {
+                    Usuario usuario = usuarioOpt.get();
 
-            return ResponseEntity.ok("✅ Contrato creado correctamente con nombre: " + blobName);
+                    Contrato contrato = new Contrato();
+                    contrato.setNombre(titulo);
+                    contrato.setDni(usuario.getDni());
+                    contrato.setEmail(usuario.getEmail());
+                    contrato.setEstado("pendiente");
+                    contrato.setFirmado(false);
+                    contrato.setFechaFirma(LocalDateTime.now());
+                    contrato.setArchivopdf(blobName); // todos comparten el mismo archivo
+
+                    contratoRepositorio.save(contrato);
+                    creados.add(dni);
+                } else {
+                    fallidos.add(dni);
+                }
+            }
+
+            StringBuilder mensaje = new StringBuilder("✅ Contratos creados: " + creados.size());
+            if (!fallidos.isEmpty()) {
+                mensaje.append(". ❌ DNIs no encontrados: ").append(String.join(", ", fallidos));
+            }
+
+            return ResponseEntity.ok(mensaje.toString());
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Error al subir el archivo: " + e.getMessage());
+                    .body("❌ Error al procesar los contratos: " + e.getMessage());
         }
     }
+
 
     /**
      * Firmar contrato con imagen de firma en Base64
      */
     @PostMapping("/{id}/firmar")
-    public ResponseEntity<String> firmarContrato(@PathVariable Long id, @RequestBody Map<String, String> datos) {
+    public ResponseEntity<String> firmarContrato(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> payload) {
+
+        String firmaBase64 = payload.get("firma");
+        if (firmaBase64 == null || !firmaBase64.startsWith("data:image/png;base64,")) {
+            return ResponseEntity.badRequest().body("Formato de firma inválido");
+        }
+
+        Optional<Contrato> contratoOpt = contratoRepositorio.findById(id);
+        if (contratoOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado");
+        }
+
+        Contrato contrato = contratoOpt.get();
+        String blobName = contrato.getArchivopdf();
+
         try {
-            Optional<Contrato> opt = contratoRepositorio.findById(id);
-            if (opt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado");
-            }
+            // Descargar PDF desde Azure
+            BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
+            ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+            blobClient.download(pdfOutputStream);
+            byte[] pdfBytes = pdfOutputStream.toByteArray();
 
-            Contrato contrato = opt.get();
+            // Decodificar firma base64
+            byte[] firmaBytes = Base64.getDecoder().decode(firmaBase64.replace("data:image/png;base64,", ""));
+            ByteArrayInputStream firmaInputStream = new ByteArrayInputStream(firmaBytes);
 
-            byte[] pdfBytes;
-            if (contrato.getArchivoPdf() != null && contrato.getArchivoPdf().length > 0) {
-                pdfBytes = contrato.getArchivoPdf();
-            } else if (contrato.getArchivopdf() != null) {
-                BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(contrato.getArchivopdf());
-                if (!blobClient.exists()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("PDF no encontrado en Blob");
-                }
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                blobClient.download(outputStream);
-                pdfBytes = outputStream.toByteArray();
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato sin PDF asociado");
-            }
-
-            String firmaBase64 = datos.get("firma");
-            if (firmaBase64 == null || !firmaBase64.contains(",")) {
-                return ResponseEntity.badRequest().body("Firma no válida");
-            }
-
-            byte[] firmaBytes = Base64.getDecoder().decode(firmaBase64.split(",")[1]);
-            BufferedImage firmaImage = ImageIO.read(new ByteArrayInputStream(firmaBytes));
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            // Modificar el PDF
+            ByteArrayOutputStream outputStreamFirmado = new ByteArrayOutputStream();
             try (PDDocument doc = PDDocument.load(pdfBytes)) {
-                PDPage pagina = doc.getPage(0);
-                PDImageXObject firma = PDImageXObject.createFromByteArray(doc, firmaBytes, "firma");
-                PDPageContentStream contenido = new PDPageContentStream(doc, pagina,
-                        PDPageContentStream.AppendMode.APPEND, true);
-                contenido.drawImage(firma, 100, 100, 150, 50);
-                contenido.close();
-                doc.save(out);
+                PDPage page = doc.getPage(0);
+                PDImageXObject pdImage = PDImageXObject.createFromByteArray(doc, firmaBytes, "firma");
+
+                try (PDPageContentStream contentStream = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true)) {
+                    contentStream.drawImage(pdImage, 100, 100, 150, 75); // Posición y tamaño
+                }
+
+                doc.save(outputStreamFirmado);
             }
 
-            contrato.setArchivoPdf(out.toByteArray());
-            contrato.setEstado("firmado");
+            // Subir el nuevo PDF firmado
+            blobClient.upload(new ByteArrayInputStream(outputStreamFirmado.toByteArray()), outputStreamFirmado.size(), true);
+
             contrato.setFirmado(true);
+            contrato.setEstado("firmado");
             contrato.setFechaFirma(LocalDateTime.now());
             contratoRepositorio.save(contrato);
 
             return ResponseEntity.ok("✅ Contrato firmado correctamente");
-
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("❌ Error al firmar el contrato: " + e.getMessage());
         }
     }
+
 
     /**
      * Subir PDF directamente a contrato (base de datos)
