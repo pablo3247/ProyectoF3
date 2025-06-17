@@ -14,29 +14,14 @@ public class ConfiguracionCORS {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        // Orígenes permitidos (frontend)
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-
-        // Métodos HTTP permitidos
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Headers permitidos (puedes restringir si quieres)
-        //Redundante
-        //config.setAllowedHeaders(Arrays.asList("*"));
-
-        // Permitir enviar credenciales (cookies, auth headers)
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
-
-        // Exponer headers que puedan necesitar ser accesibles en el cliente
-        config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        config.setExposedHeaders(Arrays.asList("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Aplicar esta configuración a todas las rutas
         source.registerCorsConfiguration("/**", config);
-
-        // Prueba
-        config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         return source;
     }
 }
