@@ -1,0 +1,1 @@
+curl -s -o /dev/null -w "%{http_code}" "${PROD_URL}/login" | grep 200
