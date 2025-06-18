@@ -12,7 +12,7 @@ import jakarta.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service
-public class EmailService {
+public class EnvioCorreoService {
 
     @Autowired
     private JavaMailSender mailSender;
@@ -24,7 +24,7 @@ public class EmailService {
         helper.setTo(destinatario);
         helper.setSubject("Contrato firmado");
         helper.setText("Hola, te adjuntamos el contrato firmado. Gracias por usar nuestra aplicación.");
-        helper.addAttachment("contrato.pdf", new FileSystemResource(archivoPdf));
+        helper.addAttachment("contrato_firmado.pdf", new FileSystemResource(archivoPdf));
 
         mailSender.send(mensaje);
     }

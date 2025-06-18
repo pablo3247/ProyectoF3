@@ -1,5 +1,6 @@
 package com.ejemplo.aplicacion.controlador;
 
+import com.ejemplo.aplicacion.servicio.EnvioCorreoService;
 import org.springframework.data.domain.Page;
 import com.ejemplo.aplicacion.Util.AzureBlobSasUtil;
 import com.ejemplo.aplicacion.dto.ContratoResumen;
@@ -35,15 +36,17 @@ import com.azure.storage.blob.models.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 @RestController
 @RequestMapping("/api/contratos")
 public class ContratoControlador {
+
+
+    @Autowired
+    private EnvioCorreoService envioCorreoService;
 
 
     @Autowired
@@ -140,7 +143,7 @@ public class ContratoControlador {
         String blobName = contrato.getArchivopdf();
 
         try {
-            // Descargar PDF desde Azure
+            // Descargar el PDF desde Azure
             BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
             ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
             blobClient.download(pdfOutputStream);
@@ -148,22 +151,21 @@ public class ContratoControlador {
 
             // Decodificar firma base64
             byte[] firmaBytes = Base64.getDecoder().decode(firmaBase64.replace("data:image/png;base64,", ""));
-            ByteArrayInputStream firmaInputStream = new ByteArrayInputStream(firmaBytes);
 
-            // Modificar el PDF
+            // Insertar firma en el PDF
             ByteArrayOutputStream outputStreamFirmado = new ByteArrayOutputStream();
             try (PDDocument doc = PDDocument.load(pdfBytes)) {
                 PDPage page = doc.getPage(0);
                 PDImageXObject pdImage = PDImageXObject.createFromByteArray(doc, firmaBytes, "firma");
 
                 try (PDPageContentStream contentStream = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true)) {
-                    contentStream.drawImage(pdImage, 100, 100, 150, 75); // Posición y tamaño
+                    contentStream.drawImage(pdImage, 100, 100, 150, 75);
                 }
 
                 doc.save(outputStreamFirmado);
             }
 
-            // Subir el nuevo PDF firmado
+            // Subir el PDF firmado al blob
             blobClient.upload(new ByteArrayInputStream(outputStreamFirmado.toByteArray()), outputStreamFirmado.size(), true);
 
             contrato.setFirmado(true);
@@ -171,7 +173,20 @@ public class ContratoControlador {
             contrato.setFechaFirma(LocalDateTime.now());
             contratoRepositorio.save(contrato);
 
-            return ResponseEntity.ok("✅ Contrato firmado correctamente");
+            // === Enviar correo al usuario con el PDF firmado ===
+            // 1. Guardar temporalmente el archivo en disco
+            File archivoTemp = File.createTempFile("contrato_firmado_", ".pdf");
+            try (FileOutputStream fos = new FileOutputStream(archivoTemp)) {
+                fos.write(outputStreamFirmado.toByteArray());
+            }
+
+            // 2. Enviar el correo
+            envioCorreoService.enviarContratoFirmado(contrato.getEmail(), archivoTemp);
+
+            // 3. Eliminar el archivo temporal si quieres
+            archivoTemp.delete();
+
+            return ResponseEntity.ok("✅ Contrato firmado y enviado al correo " + contrato.getEmail());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

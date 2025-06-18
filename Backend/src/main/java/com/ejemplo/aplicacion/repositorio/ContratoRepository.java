@@ -25,5 +25,4 @@ public interface ContratoRepository extends JpaRepository<Contrato, Long>, JpaSp
     List<String> findDistinctUsuarioNombreStartingWith(@Param("prefijo") String prefijo);
 
 
-
 }

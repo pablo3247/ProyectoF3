@@ -5,17 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="sigo?">
-      <change afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/servicio/hola.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/configuracion/SeguridadConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/ContratoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/repositorio/ContratoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/servicio/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/servicio/EnvioCorreoService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/static/verContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/static/verContratos.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/configuracion/SeguridadConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/repositorio/ContratoRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/repositorio/ContratoRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/static/verContratos.html" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/static/verContratos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,14 +116,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747994453859</updated>
-    </task>
-    <task id="LOCAL-00017" summary="02/06">
-      <option name="closed" value="true" />
-      <created>1748860004707</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1748860004707</updated>
     </task>
     <task id="LOCAL-00018" summary="02/06">
       <option name="closed" value="true" />
@@ -511,7 +501,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750199474687</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="sigo?">
+      <option name="closed" value="true" />
+      <created>1750235078972</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1750235078972</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
