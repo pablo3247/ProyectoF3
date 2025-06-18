@@ -25,8 +25,9 @@ public class Usuario {
     @Column(nullable = false)
     private String contrasena;
 
-    @Column(nullable = true)
-    private Boolean certificado;  // Usa wrapper para permitir null
+    @Column(nullable = false)
+    private Boolean certificado = true;  // Valor por defecto
+
 
     @Column(length = 255, nullable = true)
     private String rol;
@@ -85,9 +86,16 @@ public class Usuario {
         return certificado;
     }
 
-    public void setCertificado(boolean certificado) {
+
+    public Boolean getCertificado() {
+        return certificado;
+    }
+
+    public void setCertificado(Boolean certificado) {
         this.certificado = certificado;
     }
+
+
 
     public String getRol() {
         return rol;
