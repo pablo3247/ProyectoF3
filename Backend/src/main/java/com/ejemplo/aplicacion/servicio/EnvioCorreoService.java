@@ -21,6 +21,7 @@ public class EnvioCorreoService {
         MimeMessage mensaje = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mensaje, true);
 
+        helper.setFrom("no-reply@demoapp.com");  // <--- AÑADE ESTO
         helper.setTo(destinatario);
         helper.setSubject("Contrato firmado");
         helper.setText("Hola, te adjuntamos el contrato firmado. Gracias por usar nuestra aplicación.");
@@ -28,4 +29,5 @@ public class EnvioCorreoService {
 
         mailSender.send(mensaje);
     }
+
 }

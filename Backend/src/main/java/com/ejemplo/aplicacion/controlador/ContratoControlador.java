@@ -24,6 +24,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.*;
@@ -44,10 +46,8 @@ import java.util.*;
 @RequestMapping("/api/contratos")
 public class ContratoControlador {
 
-
     @Autowired
     private EnvioCorreoService envioCorreoService;
-
 
     @Autowired
     private ContratoRepository contratoRepositorio;
@@ -55,13 +55,9 @@ public class ContratoControlador {
     @Autowired
     private AzureBlobSasUtil azureBlobSasUtil;
 
-
     @Autowired
     private RepositorioUsuario repositorioUsuario;
 
-    /**
-     * Crear contrato con archivo PDF subido
-     */
     @PostMapping("/crear-con-archivo")
     public ResponseEntity<String> crearContratoConArchivo(
             @RequestParam("dnis") List<String> dnis,
@@ -77,12 +73,10 @@ public class ContratoControlador {
         String blobName = "contrato_" + UUID.randomUUID() + ".pdf";
 
         try {
-            // Asegurarse de que el contenedor existe
             if (!azureBlobSasUtil.getContainerClient().exists()) {
                 azureBlobSasUtil.getContainerClient().create();
             }
 
-            // Subir el archivo una vez
             BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
             blobClient.upload(file.getInputStream(), file.getSize(), true);
 
@@ -98,7 +92,7 @@ public class ContratoControlador {
                     contrato.setEstado("pendiente");
                     contrato.setFirmado(false);
                     contrato.setFechaFirma(LocalDateTime.now());
-                    contrato.setArchivopdf(blobName); // todos comparten el mismo archivo
+                    contrato.setArchivopdf(blobName);
 
                     contratoRepositorio.save(contrato);
                     creados.add(dni);
@@ -115,15 +109,10 @@ public class ContratoControlador {
             return ResponseEntity.ok(mensaje.toString());
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Error al procesar los contratos: " + e.getMessage());
+            return ResponseEntity.status(500).body("❌ Error al procesar los contratos: " + e.getMessage());
         }
     }
 
-
-    /**
-     * Firmar contrato con imagen de firma en Base64
-     */
     @PostMapping("/{id}/firmar")
     public ResponseEntity<String> firmarContrato(
             @PathVariable Long id,
@@ -136,23 +125,35 @@ public class ContratoControlador {
 
         Optional<Contrato> contratoOpt = contratoRepositorio.findById(id);
         if (contratoOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado");
+            return ResponseEntity.status(404).body("Contrato no encontrado");
         }
 
         Contrato contrato = contratoOpt.get();
         String blobName = contrato.getArchivopdf();
 
         try {
-            // Descargar el PDF desde Azure
+            String emailDestino = null;
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                String emailUsuario = auth.getName();
+                Optional<Usuario> usuarioOpt = repositorioUsuario.findByEmail(emailUsuario);
+                if (usuarioOpt.isPresent()) {
+                    emailDestino = usuarioOpt.get().getEmail();
+                    contrato.setEmail(emailDestino);
+                } else {
+                    System.err.println("⚠️ No se encontró usuario autenticado con email: " + emailUsuario);
+                }
+            } else {
+                System.err.println("⚠️ No hay usuario autenticado al firmar contrato.");
+            }
+
             BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
             ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
             blobClient.download(pdfOutputStream);
             byte[] pdfBytes = pdfOutputStream.toByteArray();
 
-            // Decodificar firma base64
             byte[] firmaBytes = Base64.getDecoder().decode(firmaBase64.replace("data:image/png;base64,", ""));
 
-            // Insertar firma en el PDF
             ByteArrayOutputStream outputStreamFirmado = new ByteArrayOutputStream();
             try (PDDocument doc = PDDocument.load(pdfBytes)) {
                 PDPage page = doc.getPage(0);
@@ -165,7 +166,6 @@ public class ContratoControlador {
                 doc.save(outputStreamFirmado);
             }
 
-            // Subir el PDF firmado al blob
             blobClient.upload(new ByteArrayInputStream(outputStreamFirmado.toByteArray()), outputStreamFirmado.size(), true);
 
             contrato.setFirmado(true);
@@ -173,26 +173,34 @@ public class ContratoControlador {
             contrato.setFechaFirma(LocalDateTime.now());
             contratoRepositorio.save(contrato);
 
-            // === Enviar correo al usuario con el PDF firmado ===
-            // 1. Guardar temporalmente el archivo en disco
-            File archivoTemp = File.createTempFile("contrato_firmado_", ".pdf");
-            try (FileOutputStream fos = new FileOutputStream(archivoTemp)) {
-                fos.write(outputStreamFirmado.toByteArray());
+            if (emailDestino != null && !emailDestino.isBlank()) {
+                File archivoTemp = File.createTempFile("contrato_firmado_", ".pdf");
+                try (FileOutputStream fos = new FileOutputStream(archivoTemp)) {
+                    fos.write(outputStreamFirmado.toByteArray());
+                }
+
+                try {
+                    envioCorreoService.enviarContratoFirmado(emailDestino, archivoTemp);
+                    System.out.println("📨 Correo enviado correctamente a: " + emailDestino);
+                } catch (Exception ex) {
+                    System.err.println("❌ Error al enviar correo a " + emailDestino + ": " + ex.getMessage());
+                    ex.printStackTrace();
+                } finally {
+                    if (archivoTemp.exists()) archivoTemp.delete();
+                }
+
+            } else {
+                System.err.println("⚠️ Email no disponible: no se envió el contrato firmado.");
             }
 
-            // 2. Enviar el correo
-            envioCorreoService.enviarContratoFirmado(contrato.getEmail(), archivoTemp);
+            return ResponseEntity.ok("✅ Contrato firmado y enviado al correo " + emailDestino);
 
-            // 3. Eliminar el archivo temporal si quieres
-            archivoTemp.delete();
-
-            return ResponseEntity.ok("✅ Contrato firmado y enviado al correo " + contrato.getEmail());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("❌ Error al firmar el contrato: " + e.getMessage());
+            return ResponseEntity.status(500).body("❌ Error al firmar el contrato: " + e.getMessage());
         }
     }
+
 
 
     /**
