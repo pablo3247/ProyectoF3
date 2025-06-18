@@ -33,14 +33,6 @@
       margin-top: 15px;
       color: green;
     }
-    .checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  }
-.checkbox-wrapper label {
-  margin-left: 4px;
-  }
-
   </style>
 </head>
 <body>
@@ -51,11 +43,6 @@
   <input type="email" id="email" placeholder="Correo electrónico" required>
   <input type="number" id="telefono" placeholder="Teléfono" required>
   <input type="password" id="contrasena" placeholder="Contraseña" required>
-
-  <div class="campo checkbox-wrapper">
-    <input type="checkbox" id="certificado" />
-    <label for="certificado">Tiene certificado</label>
-  </div>
 
   <div class="campo">
     <label for="rol">Rol:</label>
@@ -78,7 +65,7 @@
 
     if (!token || rol !== "ADMIN") {
       alert("No tienes permisos para acceder a esta página. Debes iniciar sesión como administrador.");
-      window.location.href = "/index.html"; // Cambia esta ruta por la de tu login
+      window.location.href = "/index.html";
     }
   });
 
@@ -91,7 +78,6 @@
       email: document.getElementById("email").value.trim(),
       telefono: document.getElementById("telefono").value.trim(),
       contrasena: document.getElementById("contrasena").value,
-      certificado: document.getElementById("certificado").checked,
       rol: document.getElementById("rol").value
     };
 
@@ -108,7 +94,7 @@
       if (!res.ok) throw new Error('Error al crear usuario');
 
       document.getElementById('respuesta').textContent = "Usuario creado correctamente";
-      this.reset();  // limpiar formulario
+      this.reset();
 
     } catch (error) {
       document.getElementById('respuesta').textContent = "Error: " + error.message;
@@ -118,4 +104,3 @@
 
 </body>
 </html>
-
