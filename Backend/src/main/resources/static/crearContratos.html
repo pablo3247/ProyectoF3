@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crear Contrato</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Opcional: estilos para lista de usuarios con checkboxes */
+    #listaUsuarios {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    #listaUsuarios label {
+      display: block;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>Crear Contrato</h1>
+
+<form id="formCrearContrato">
+  <fieldset>
+    <legend>Selecciona Usuarios:</legend>
+    <div id="listaUsuarios">
+      <!-- Aquí se cargarán los usuarios con checkbox -->
+    </div>
+  </fieldset>
+
+  <label for="nombreContrato">Nombre del contrato:</label><br />
+  <input type="text" id="nombreContrato" required /><br /><br />
+
+  <label for="archivoContrato">Archivo PDF:</label><br />
+  <input type="file" id="archivoContrato" accept="application/pdf" required /><br /><br />
+
+  <button type="submit">Crear Contrato</button>
+</form>
+
+<p id="mensajeContrato"></p>
+
+<script>
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("No estás autenticado. Redirigiendo...");
+    window.location.href = "/index.html";
+  }
+
+  const headers = { Authorization: "Bearer " + token };
+
+  function cargarUsuarios() {
+    fetch("/api/usuarios", { headers })
+      .then((res) => res.json())
+      .then((usuarios) => {
+        const contenedor = document.getElementById("listaUsuarios");
+        usuarios.forEach((u) => {
+          const label = document.createElement("label");
+          label.innerHTML = `
+            <input type="checkbox" name="usuarios" value="${u.dni}" />
+            ${u.nombre} (${u.dni})
+          `;
+          contenedor.appendChild(label);
+        });
+      })
+      .catch((err) => {
+        console.error("Error al cargar usuarios:", err);
+        alert("Error al cargar usuarios");
+      });
+  }
+
+  document.getElementById("formCrearContrato").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const checkboxes = document.querySelectorAll('input[name="usuarios"]:checked');
+    const dnis = Array.from(checkboxes).map((cb) => cb.value);
+
+    const titulo = document.getElementById("nombreContrato").value.trim();
+    const archivo = document.getElementById("archivoContrato").files[0];
+
+    if (dnis.length === 0 || !titulo || !archivo) {
+      alert("Debes seleccionar al menos un usuario, ingresar un nombre y seleccionar un archivo PDF.");
+      return;
+    }
+
+    const formData = new FormData();
+    dnis.forEach((dni) => formData.append("dnis", dni));
+    formData.append("titulo", titulo);
+    formData.append("file", archivo);
+
+    try {
+      const res = await fetch("/api/contratos/crear-con-archivo", {
+        method: "POST",
+        headers: { Authorization: "Bearer " + token },
+        body: formData,
+      });
+
+      const mensaje = await res.text();
+      document.getElementById("mensajeContrato").textContent = mensaje;
+      document.getElementById("formCrearContrato").reset();
+    } catch (error) {
+      console.error(error);
+      document.getElementById("mensajeContrato").textContent = "❌ Error: " + error.message;
+    }
+  });
+
+  cargarUsuarios();
+</script>
+</body>
+</html>

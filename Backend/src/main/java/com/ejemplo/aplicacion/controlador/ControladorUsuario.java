@@ -28,5 +28,16 @@ public class ControladorUsuario {
         return repositorioUsuario.findAll();
     }
 
+    @GetMapping("/solo-usuarios")
+    public List<Usuario> obtenerUsuariosNormales() {
+        return repositorioUsuario.findAll().stream()
+                .filter(u -> "USER".equalsIgnoreCase(u.getRol()))
+                .toList();
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Usuario> buscarPorEmail(@PathVariable String email) {
+        return ResponseEntity.of(repositorioUsuario.findByEmail(email));
+    }
 
 }

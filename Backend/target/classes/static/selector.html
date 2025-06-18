@@ -37,23 +37,36 @@
 <div id="opciones"></div>
 
 <script>
-  const rol = localStorage.getItem('rol');
-  const contenedor = document.getElementById('opciones');
+  // Obtener token solo una vez al cargar la página
+  const token = localStorage.getItem('token');
+  console.log('Token almacenado:', token);
 
-  if (rol === "admin") {
-    contenedor.innerHTML = `
-      <button onclick="window.location.href='nuevoContrato.html'">➕ Nuevo contrato</button>
-      <button onclick="window.location.href='verContratos.html'">📄 Ver contratos</button>
-      <button onclick="window.location.href='gestionarContratos.html'">⚙️ Gestionar contratos</button>
-      <button onclick="window.location.href='index.html'">🔓 Cerrar sesión</button>
-    `;
-  } else {
-    contenedor.innerHTML = `
-      <button onclick="window.location.href='nuevoContrato.html'">📝 Nuevo contrato</button>
-      <button onclick="window.location.href='index.html'">🔓 Cerrar sesión</button>
-    `;
+  if (!token) {
+    alert('No estás autenticado, redirigiendo a login...');
+    window.location.href = 'index.html';
   }
+
+  // Aquí continúa tu código que requiere token
+
+
+    const rol = localStorage.getItem('rol');
+    const contenedor = document.getElementById('opciones');
+    console.log('Rol desde localStorage:', rol);
+
+    if (rol && rol.toUpperCase() === "ADMIN") {
+      contenedor.innerHTML = `
+        <button onclick="window.location.href='firma.html'">➕ Nuevo contrato</button>
+        <button onclick="window.location.href='verContratos.html'">📄 Ver contratos</button>
+        <button onclick="window.location.href='crearContratos.html'">📌 Asignar contratos</button>
+        <button onclick="window.location.href='formulario.html'">👤 Crear usuario</button>
+        <button onclick="window.location.href='index.html'">🔓 Cerrar sesión</button>
+      `;
+    } else {
+      contenedor.innerHTML = `
+        <button onclick="window.location.href='firma.html'">📝 Firmar mis contratos</button>
+        <button onclick="window.location.href='index.html'">🔓 Cerrar sesión</button>
+      `;
+    }
 </script>
 </body>
-
 </html>

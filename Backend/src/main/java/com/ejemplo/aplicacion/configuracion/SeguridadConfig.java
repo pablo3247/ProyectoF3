@@ -3,9 +3,11 @@ package com.ejemplo.aplicacion.configuracion;
 import com.ejemplo.aplicacion.seguridad.FiltroJwt;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -23,19 +25,24 @@ public class SeguridadConfig {
         http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/", "/index.html", "/selector.html", "/gestionarContratos.html",
-                                "/nuevoContrato.html", "/verContratos.html", "/resumen.html", "/firma.html",
+                                "/nuevoContrato.html", "/resumen.html", "/firma.html", "/crearContratos.html",
                                 "/css/**", "/js/**", "/imagenes/**", "/fonts/**", "/favicon.ico",
-                                "/api/auth/login", "/api/usuarios/crear"
+                                "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**", "/error", "verContratos.html",
+                                "/formulario.html"
                         ).permitAll()
-
-                        .requestMatchers("/api/contratos/crear").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/contratos/**").hasRole("ADMIN")
-
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers("/formulario.html").hasRole("ADMIN") // <--- aquí
+                        // el resto de reglas
+                        .requestMatchers(HttpMethod.GET, "/api/contratos").authenticated() // para requerir token
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

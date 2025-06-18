@@ -71,7 +71,18 @@
 <div class="respuesta" id="respuesta"></div>
 
 <script>
-  document.getElementById("registroForm").addEventListener("submit", function(e) {
+  // Validar token y rol al cargar la página
+  document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    const rol = localStorage.getItem("rol");
+
+    if (!token || rol !== "ADMIN") {
+      alert("No tienes permisos para acceder a esta página. Debes iniciar sesión como administrador.");
+      window.location.href = "/index.html"; // Cambia esta ruta por la de tu login
+    }
+  });
+
+  document.getElementById("registroForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
     const datos = {
@@ -84,13 +95,27 @@
       rol: document.getElementById("rol").value
     };
 
-    // Guardar datos temporalmente
-    sessionStorage.setItem("usuarioResumen", JSON.stringify(datos));
+    try {
+      const res = await fetch('/api/usuarios/crear', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(datos)
+      });
 
-    // Redirigir al resumen
-    window.location.href = "/resumen.html";
+      if (!res.ok) throw new Error('Error al crear usuario');
+
+      document.getElementById('respuesta').textContent = "Usuario creado correctamente";
+      this.reset();  // limpiar formulario
+
+    } catch (error) {
+      document.getElementById('respuesta').textContent = "Error: " + error.message;
+    }
   });
 </script>
+
 </body>
 </html>
 

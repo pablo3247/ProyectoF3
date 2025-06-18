@@ -2,106 +2,207 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Firma del Contrato</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Firma del contrato</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-
     canvas {
-      border: 2px solid #000;
-      border-radius: 8px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      display: block;
+      margin: 20px auto;
+      background-color: white;
+    }
+    .botones, .formulario {
+      text-align: center;
       margin-top: 20px;
     }
-
-    button {
-      margin: 10px;
+    button, select {
       padding: 10px 20px;
-      background-color: #2b6cb0;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      margin: 0 10px;
     }
-
-    button:hover {
-      background-color: #1a4e85;
+    #mensaje {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+      color: red;
     }
   </style>
 </head>
 <body>
+<h2 style="text-align: center;">Firmar Contrato</h2>
+<div class="formulario">
+  <label for="contratoSelect">Selecciona un contrato:</label>
+  <select id="contratoSelect"></select>
+</div>
 
-<h2>Firma el contrato con tu dedo</h2>
+<div id="vistaPreviaContainer" style="text-align: center; margin-top: 30px;">
+  <iframe id="vistaPrevia" width="80%" height="500px" style="border: 1px solid #ccc;"></iframe>
+</div>
 
-<canvas id="canvasFirma" width="500" height="200"></canvas><br>
 
-<button onclick="limpiarCanvas()">🧹 Limpiar</button>
-<button onclick="guardarYContinuar()">✅ Guardar y continuar</button>
+<canvas id="canvas" width="600" height="200"></canvas>
+<div class="botones">
+  <button id="borrar">🗑️ Borrar</button>
+  <button id="guardar">✅ Guardar Firma</button>
+  <button id="descargar">📥 Descargar Contrato</button>
+</div>
+<p id="mensaje"></p>
 
 <script>
-  const canvas = document.getElementById('canvasFirma');
+  const token = localStorage.getItem("token");
+  const dni = localStorage.getItem("dni");
+
+  if (!token || !dni) {
+    alert("No estás autenticado o falta el DNI. Redirigiendo a login...");
+    window.location.href = "index.html";
+  }
+
+  const headers = { Authorization: "Bearer " + token };
+  const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   let pintando = false;
 
-  canvas.addEventListener('mousedown', e => {
+  function startDraw(e) {
     pintando = true;
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-  });
-
-  canvas.addEventListener('mousemove', e => {
-    if (pintando) {
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.stroke();
-    }
-  });
-
-  canvas.addEventListener('mouseup', () => {
+    draw(e);
+  }
+  function endDraw() {
     pintando = false;
-  });
-
-  canvas.addEventListener('mouseleave', () => {
-    pintando = false;
-  });
-
-  // Touch para móviles
-  canvas.addEventListener('touchstart', e => {
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
     ctx.beginPath();
-    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-    e.preventDefault();
-  });
-
-  canvas.addEventListener('touchmove', e => {
-    const touch = e.touches[0];
+  }
+  function draw(e) {
+    if (!pintando) return;
     const rect = canvas.getBoundingClientRect();
-    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
     ctx.stroke();
-    e.preventDefault();
-  });
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  }
 
-  function limpiarCanvas() {
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("mousemove", draw);
+
+  function borrarFirma() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function guardarYContinuar() {
-    const datos = sessionStorage.getItem("datosContrato");
-    if (!datos) {
-      alert("No se encontraron datos del contrato.");
+ async function cargarContratos() {
+  try {
+    const res = await fetch(`/api/contratos/dni/${dni}`, { headers });
+
+    const text = await res.text();  // lee la respuesta como texto
+    console.log("Respuesta cruda:", text);
+
+    const contratos = JSON.parse(text);
+
+    const select = document.getElementById("contratoSelect");
+    select.innerHTML = "";  // limpia antes
+
+    if (contratos.length === 0) {
+      select.innerHTML = '<option value="">No hay contratos disponibles</option>';
+      document.getElementById("vistaPrevia").src = "";
       return;
     }
 
-    const firmaImagen = canvas.toDataURL("image/png");
-    sessionStorage.setItem("firmaImagen", firmaImagen);
+    // Agregar una opción por contrato
+    contratos.forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.id;
+      option.textContent = `${c.nombre} (${c.estado})`;
+      select.appendChild(option);
+    });
 
-    window.location.href = "resumen.html";
+    // Carga la vista previa del primer contrato
+    actualizarVistaPrevia();
+
+    // Cambiar la vista previa cuando cambie el select
+    select.addEventListener("change", actualizarVistaPrevia);
+
+  } catch (err) {
+    document.getElementById("mensaje").textContent = "Error al cargar contratos.";
+    console.error(err);
   }
-</script>
+}
 
+
+
+  async function guardarFirma() {
+    const idContrato = document.getElementById("contratoSelect").value;
+    if (!idContrato) return alert("Selecciona un contrato.");
+
+    const firmaBase64 = canvas.toDataURL("image/png");
+    const res = await fetch(`/api/contratos/${idContrato}/firmar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      },
+      body: JSON.stringify({ firma: firmaBase64 })
+    });
+
+    const mensaje = await res.text();
+    document.getElementById("mensaje").textContent = mensaje;
+    if (res.ok) {
+      borrarFirma();
+      document.getElementById("contratoSelect").innerHTML = "";
+      cargarContratos();
+    }
+  }
+
+  async function descargarContrato() {
+    const idContrato = document.getElementById("contratoSelect").value;
+    if (!idContrato) return alert("Selecciona un contrato.");
+
+    const res = await fetch(`/api/contratos/${idContrato}/descargar-pdf`, { headers });
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "contrato_firmado.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  // Asignar funciones a botones
+  document.getElementById("borrar").addEventListener("click", borrarFirma);
+  document.getElementById("guardar").addEventListener("click", guardarFirma);
+  document.getElementById("descargar").addEventListener("click", descargarContrato);
+
+
+async function actualizarVistaPrevia() {
+  const select = document.getElementById("contratoSelect");
+  const idContrato = select.value;
+  const iframe = document.getElementById("vistaPrevia");
+
+  if (!idContrato) {
+    iframe.src = "";
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/contratos/${idContrato}/descargar-pdf`, {
+      headers: { Authorization: "Bearer " + token }
+    });
+    if (!res.ok) throw new Error("No autorizado o error al obtener PDF");
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    iframe.src = url;
+
+  } catch (error) {
+    iframe.src = "";
+    document.getElementById("mensaje").textContent = "Error al cargar vista previa: " + error.message;
+  }
+}
+
+
+  // Cargar al inicio
+  cargarContratos();
+</script>
 </body>
 </html>

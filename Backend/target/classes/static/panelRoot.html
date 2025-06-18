@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel ROOT - Contratos</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    h1 { color: #2b6cb0; }
+    .filtros { margin-bottom: 20px; }
+    input { margin-right: 10px; padding: 5px; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #2b6cb0; color: white; }
+    button { padding: 5px 10px; margin-left: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Panel de Contratos Firmados (ROOT)</h1>
+
+  <div class="filtros">
+    <label>DNI:</label>
+    <input type="text" id="filtroDni">
+
+    <label>Apellidos:</label>
+    <input type="text" id="filtroApellidos">
+
+    <label>Desde:</label>
+    <input type="date" id="filtroDesde">
+
+    <label>Hasta:</label>
+    <input type="date" id="filtroHasta">
+
+    <button onclick="filtrar()">🔍 Buscar</button>
+    <button onclick="limpiar()">🧹 Limpiar</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>DNI</th>
+        <th>Apellidos</th>
+        <th>Email</th>
+        <th>Fecha Firma</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody id="tablaContratos">
+      <!-- Resultados van aquí -->
+    </tbody>
+  </table>
+
+  <script src="js/panelRoot.js"></script>
+</body>
+</html>
