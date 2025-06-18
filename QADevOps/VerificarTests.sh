@@ -1,0 +1,1 @@
+mvn clean test && npm run e2e

@@ -1,0 +1,1 @@
+curl -X GET "${STAGING_URL}/contrato/view/1" | jq '.status' | grep "200"
