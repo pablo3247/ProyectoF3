@@ -36,10 +36,10 @@ public class SeguridadConfig {
                                 "/api/auth/login", "/api/usuarios/crear", "/api/usuarios/email/**", "/error", "verContratos.html",
                                 "/formulario.html"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers("/formulario.html").hasRole("ADMIN") // <--- aquí
                         // el resto de reglas
-                        .requestMatchers(HttpMethod.GET, "/api/contratos").permitAll()
-                        // ...
+                        .requestMatchers(HttpMethod.GET, "/api/contratos").authenticated() // para requerir token
                         .anyRequest().authenticated()
                 )
 

@@ -12,6 +12,7 @@ com\ejemplo\aplicacion\repositorio\RepositorioFirma.class
 com\ejemplo\aplicacion\configuracion\AzureBlobConfig.class
 com\ejemplo\aplicacion\repositorio\ContratoRepository.class
 com\ejemplo\aplicacion\modelo\Firma.class
+com\ejemplo\aplicacion\servicio\EmailService.class
 com\ejemplo\aplicacion\Util\AzureBlobSasUtil.class
 com\ejemplo\aplicacion\modelo\Usuario.class
 com\ejemplo\aplicacion\repositorio\AuditLogRepositorio.class

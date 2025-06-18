@@ -36,6 +36,11 @@ public class Contrato {
     @Column(name = "fecha_firma")
     private LocalDateTime fechaFirma; // fecha y hora de la firma
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id") // la columna FK en la tabla contratos
+    private Usuario usuario;
+
+
     // Getters y setters
 
     public Long getId() {
@@ -116,5 +121,15 @@ public class Contrato {
 
     public void setFechaFirma(LocalDateTime fechaFirma) {
         this.fechaFirma = fechaFirma;
+
     }
+        public Usuario getUsuario() {
+            return usuario;
+        }
+
+        public void setUsuario(Usuario usuario) {
+            this.usuario = usuario;
+        }
+
+
 }

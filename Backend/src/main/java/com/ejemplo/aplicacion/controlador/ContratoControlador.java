@@ -45,17 +45,13 @@ import java.util.*;
 @RequestMapping("/api/contratos")
 public class ContratoControlador {
 
-    private final ContratoRepository contratoRepository;
 
-    public ContratoControlador(ContratoRepository contratoRepository) {
-        this.contratoRepository = contratoRepository;
-    }
+    @Autowired
+    private ContratoRepository contratoRepositorio;
 
     @Autowired
     private AzureBlobSasUtil azureBlobSasUtil;
 
-    @Autowired
-    private ContratoRepository contratoRepositorio;
 
     @Autowired
     private RepositorioUsuario repositorioUsuario;
@@ -313,41 +309,50 @@ public class ContratoControlador {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarContrato(@PathVariable Long id) {
-        if (!contratoRepositorio.existsById(id)) {
+        Optional<Contrato> contratoOpt = contratoRepositorio.findById(id);
+        if (contratoOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato no encontrado");
         }
+
+        Contrato contrato = contratoOpt.get();
+
+        // Borrar el archivo PDF de Azure si existe
+        String blobName = contrato.getArchivopdf();
+        if (blobName != null && !blobName.isEmpty()) {
+            try {
+                BlobClient blobClient = azureBlobSasUtil.getContainerClient().getBlobClient(blobName);
+                if (blobClient.exists()) {
+                    blobClient.delete();
+                }
+            } catch (Exception e) {
+                // Puedes loguear el error pero no detener la eliminación del contrato
+                e.printStackTrace();
+            }
+        }
+
+        // Borrar el contrato de la base de datos
         contratoRepositorio.deleteById(id);
         return ResponseEntity.ok("Contrato eliminado");
     }
 
+
+    // Autocompletar DNI: GET /api/contratos/dni?query=12
+    @GetMapping("/dni")
+    public List<String> buscarDniPorQuery(@RequestParam String query) {
+        return contratoRepositorio.findDniStartingWith(query.toLowerCase());
+    }
+
+
     @GetMapping
-    public Page<Contrato> listarContratos(
-            @RequestParam(required = false) String dni,
-            @RequestParam(required = false) String apellidos,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Specification<Contrato> spec = Specification.where(null);
+    public ResponseEntity<Page<Contrato>> listarContratos(Pageable pageable) {
+        Page<Contrato> contratos = contratoRepositorio.findAll(pageable);
+        return ResponseEntity.ok(contratos);
+    }
 
-        if (dni != null && !dni.isEmpty()) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("dni")), "%" + dni.toLowerCase() + "%"));
-        }
-
-        if (apellidos != null && !apellidos.isEmpty()) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("apellidos")), "%" + apellidos.toLowerCase() + "%"));
-        }
-
-        if (fecha != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.equal(root.get("fechaFirma"), fecha));
-        }
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("fechaFirma").descending());
-
-        return contratoRepository.findAll(spec, pageable);
+    @GetMapping("/usuarios")
+    public ResponseEntity<List<String>> buscarUsuarios(@RequestParam String query) {
+        List<String> nombres = contratoRepositorio.findDistinctUsuarioNombreStartingWith(query.toLowerCase() + "%");
+        return ResponseEntity.ok(nombres);
     }
 
 

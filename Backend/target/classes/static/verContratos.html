@@ -52,10 +52,19 @@
   <button onclick="crearContrato()">➕ Crear Contrato</button>
 </div>
 
-<h3>🔍 Filtrar Contratos</h3>
-<div>
-  <input type="text" id="filtroDNI" placeholder="DNI" />
-  <input type="text" id="filtroApellidos" placeholder="Apellidos" />
+<h3>🔍 Filtrar Contratos</h3><div>
+  <!-- Input nombre con datalist ya existente -->
+  <input type="text" id="filtroNombre" placeholder="Nombre del contrato" list="listaNombres" />
+  <datalist id="listaNombres"></datalist>
+
+  <!-- Añadimos input nombre de usuario con datalist -->
+  <input type="text" id="filtroUsuario" placeholder="Nombre del usuario" list="listaUsuarios" />
+  <datalist id="listaUsuarios"></datalist>
+
+  <!-- Añadimos input DNI con datalist -->
+  <input type="text" id="filtroDNI" placeholder="DNI" list="listaDNI" />
+  <datalist id="listaDNI"></datalist>
+
   <input type="date" id="filtroFecha" />
   <button onclick="cargarContratos()">Buscar</button>
 </div>
@@ -93,6 +102,78 @@
 
 <script>
 
+  const inputNombre = document.getElementById("filtroNombre");
+const datalistNombres = document.getElementById("listaNombres");
+
+inputNombre.addEventListener("input", function () {
+  const valor = inputNombre.value.trim();
+  if (valor.length < 2) {
+    datalistNombres.innerHTML = ""; // Limpiar si menos de 2 caracteres
+    return;
+  }
+
+  fetch(`/api/contratos/nombres?query=${encodeURIComponent(valor)}`, {
+    headers: getAuthHeaders()
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Error buscando nombres");
+      return res.json();
+    })
+    .then(nombres => {
+      datalistNombres.innerHTML = "";
+      nombres.forEach(nombre => {
+        const option = document.createElement("option");
+        option.value = nombre;
+        datalistNombres.appendChild(option);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      datalistNombres.innerHTML = "";
+    });
+});
+
+function setupAutocomplete(inputId, datalistId, apiEndpoint) {
+  const input = document.getElementById(inputId);
+  const datalist = document.getElementById(datalistId);
+
+  input.addEventListener("input", function () {
+    const valor = input.value.trim();
+    if (valor.length < 2) {
+      datalist.innerHTML = ""; // Limpiar si menos de 2 caracteres
+      return;
+    }
+
+    fetch(`/api/contratos/${apiEndpoint}?query=${encodeURIComponent(valor)}`, {
+      headers: getAuthHeaders()
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`Error buscando ${inputId}`);
+        return res.json();
+      })
+      .then(lista => {
+        datalist.innerHTML = "";
+        lista.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item;
+          datalist.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        datalist.innerHTML = "";
+      });
+  });
+}
+
+// Configuramos los autocompletados
+setupAutocomplete("filtroNombre", "listaNombres", "nombres");
+setupAutocomplete("filtroUsuario", "listaUsuarios", "usuarios");
+setupAutocomplete("filtroDNI", "listaDNI", "dni");
+
+
+
+
   let pagina = 0;
 const size = 10;
 
@@ -100,25 +181,36 @@ const size = 10;
 
   if (!token) {
     alert("Debes iniciar sesión");
-    window.location.href = "/login.html";
+    window.location.href = "/index.html";
   }
 
-  function getAuthHeaders(extra = {}) {
-    return {
-      ...extra,
-      Authorization: `Bearer ${token}`,
-    };
+ function getAuthHeaders(extra = {}) {
+  const tokenActual = localStorage.getItem("token");
+  if (!tokenActual) {
+    alert("Debes iniciar sesión");
+    window.location.href = "/index.html";
+    throw new Error("No autorizado");
   }
+  return {
+    ...extra,
+    Authorization: `Bearer ${tokenActual}`,
+  };
+}
 
- function cargarContratos() {
+function cargarContratos() {
+  const nombre = document.getElementById("filtroNombre").value.trim();
   const dni = document.getElementById("filtroDNI").value.trim();
-  const apellidos = document.getElementById("filtroApellidos").value.trim();
+  const usuario = document.getElementById("filtroUsuario").value.trim();
+
   const fecha = document.getElementById("filtroFecha").value;
 
   const queryParams = new URLSearchParams();
+  if (nombre) queryParams.append("nombre", nombre);
+
   if (dni) queryParams.append("dni", dni);
-  if (apellidos) queryParams.append("apellidos", apellidos);
   if (fecha) queryParams.append("fecha", fecha);
+  if (usuario) queryParams.append("usuario", usuario);
+
   queryParams.append("page", pagina);
   queryParams.append("size", size);
 
@@ -129,7 +221,7 @@ const size = 10;
     .then(res => {
       if (res.status === 401) {
         alert("No autorizado. Por favor, inicia sesión de nuevo.");
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         throw new Error("No autorizado");
       }
       if (!res.ok) throw new Error("No se pudo cargar contratos");
@@ -170,7 +262,7 @@ const size = 10;
     .then(response => {
       if (response.status === 401) {
         alert("No autorizado. Por favor, inicia sesión de nuevo.");
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         throw new Error("No autorizado");
       }
       if (!response.ok) throw new Error("No se pudo obtener la URL del PDF");
@@ -201,7 +293,7 @@ const size = 10;
     .then(res => {
       if (res.status === 401) {
         alert("No autorizado. Por favor, inicia sesión de nuevo.");
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         throw new Error("No autorizado");
       }
       if (!res.ok) throw new Error("Error al crear contrato");
@@ -225,7 +317,7 @@ const size = 10;
     .then(res => {
       if (res.status === 401) {
         alert("No autorizado. Por favor, inicia sesión de nuevo.");
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         throw new Error("No autorizado");
       }
       if (!res.ok) throw new Error("Error al eliminar contrato");
@@ -278,7 +370,7 @@ const size = 10;
 
       if (response.status === 401) {
         alert("No autorizado. Por favor, inicia sesión de nuevo.");
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         throw new Error("No autorizado");
       }
 
@@ -312,6 +404,19 @@ function cambiarPagina(delta) {
 
 
   window.onload = cargarContratos;
+
+  // Activar filtros al cambiar campos
+document.getElementById("filtroNombre").addEventListener("change", cargarContratos);
+document.getElementById("filtroNombre").addEventListener("blur", cargarContratos);
+document.getElementById("filtroNombre").addEventListener("keypress", function (e) {
+  if (e.key === "Enter") cargarContratos();
+});
+
+document.getElementById("filtroUsuario").addEventListener("change", cargarContratos);
+document.getElementById("filtroDNI").addEventListener("change", cargarContratos);
+document.getElementById("filtroFecha").addEventListener("change", cargarContratos);
+
+
 </script>
 
 </body>
