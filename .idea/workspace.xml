@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="sigo?">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/controlador/ContratoControlador.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/servicio/EnvioCorreoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/java/com/ejemplo/aplicacion/servicio/EnvioCorreoService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/target/classes/com/ejemplo/aplicacion/controlador/ContratoControlador.class" afterDir="false" />
-    </list>
+    <list default="true" id="94dee1df-0873-441c-84a4-074240aedc29" name="Changes" comment="sigo?" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,14 +106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1747994453859</updated>
-    </task>
-    <task id="LOCAL-00019" summary="02/06">
-      <option name="closed" value="true" />
-      <created>1748860908182</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1748860908182</updated>
     </task>
     <task id="LOCAL-00020" summary="02/06">
       <option name="closed" value="true" />
@@ -506,7 +491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750239660127</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="sigo?">
+      <option name="closed" value="true" />
+      <created>1750241714094</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1750241714094</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
