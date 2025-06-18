@@ -1,14 +1,14 @@
-# Usa una imagen de Java 17
-FROM openjdk:17-jdk-slim
+# Etapa de construcción con Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
-# Crea un directorio de trabajo en el contenedor
 WORKDIR /app
+COPY . /app
+RUN mvn clean package -DskipTests
 
-# Copia el archivo .jar generado por Maven
-COPY target/*.jar app.jar
+# Etapa de ejecución con Java 21
+FROM eclipse-temurin:21-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 
-# Expone el puerto 8080 (por defecto en Spring Boot)
 EXPOSE 8080
-
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.address=0.0.0.0"]
