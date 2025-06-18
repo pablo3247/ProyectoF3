@@ -102,24 +102,23 @@
     const select = document.getElementById("contratoSelect");
     select.innerHTML = "";  // limpia antes
 
-    if (contratos.length === 0) {
-      select.innerHTML = '<option value="">No hay contratos disponibles</option>';
+    // 🔥 Filtrar solo los contratos que NO estén firmados
+    const contratosNoFirmados = contratos.filter(c => c.estado !== "firmado");
+
+    if (contratosNoFirmados.length === 0) {
+      select.innerHTML = '<option value="">No hay contratos disponibles para firmar</option>';
       document.getElementById("vistaPrevia").src = "";
       return;
     }
 
-    // Agregar una opción por contrato
-    contratos.forEach(c => {
+    contratosNoFirmados.forEach(c => {
       const option = document.createElement("option");
       option.value = c.id;
       option.textContent = `${c.nombre} (${c.estado})`;
       select.appendChild(option);
     });
 
-    // Carga la vista previa del primer contrato
     actualizarVistaPrevia();
-
-    // Cambiar la vista previa cuando cambie el select
     select.addEventListener("change", actualizarVistaPrevia);
 
   } catch (err) {
